@@ -16,15 +16,31 @@ const getRandomJewelType = () => {
 };
 
 export const handleCascade = (board: NullableJewel[][]): NullableJewel[][] => {
-  const newBoard = [...board];
+  const newBoard = [...board.map(row => [...row])];
 
   // Drop existing jewels
   for (let x = 0; x < BOARD_SIZE; x++) {
-    for (let y = BOARD_SIZE - 1; y > 0; y--) {
-      if (!newBoard[y][x] && newBoard[y - 1][x]) {
-        newBoard[y][x] = { ...newBoard[y - 1][x]!, position: { x, y } };
-        newBoard[y - 1][x] = null;
+    let bottomY = BOARD_SIZE - 1;
+    
+    // Start from the bottom and move jewels down
+    while (bottomY >= 0) {
+      if (newBoard[bottomY][x] === null) {
+        // Find the next non-null jewel above
+        let topY = bottomY - 1;
+        while (topY >= 0 && newBoard[topY][x] === null) {
+          topY--;
+        }
+
+        // If we found a jewel, move it down
+        if (topY >= 0) {
+          newBoard[bottomY][x] = {
+            ...newBoard[topY][x]!,
+            position: { x, y: bottomY },
+          };
+          newBoard[topY][x] = null;
+        }
       }
+      bottomY--;
     }
   }
 
