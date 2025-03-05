@@ -1,14 +1,15 @@
 # Progress: Bejeweled Clone with AI Mode
 
 ## Current Status
-The project has reached a significant milestone with a fully playable match-three game featuring modern UI/UX elements and smooth animations. The foundation is solid for adding AI capabilities.
+The project has reached a significant milestone with a fully playable match-three game featuring polished mechanics, smooth animations, and strict game rules enforcement.
 
 ## Completed
 1. Core Game Mechanics:
    - Board initialization with no initial matches
-   - Jewel selection and swapping
-   - Match detection
-   - Cascade system
+   - Move validation with match checking
+   - Invalid move rejection and animation
+   - Match detection and processing
+   - Cascade system with dynamic timing
    - Score tracking with combo multiplier
 
 2. User Interface:
@@ -17,16 +18,19 @@ The project has reached a significant milestone with a fully playable match-thre
    - Responsive layout
    - Score display with combo indicator
    - Gradient text effects
+   - Custom drag preview
 
 3. Animations (GSAP):
    - Dynamic cascade timing based on fall distance
    - Smooth jewel swapping
    - Match disappearing effects
    - Bounce effects for falling jewels
+   - Invalid move feedback
 
 4. Interactions:
    - Click-to-select mechanics
    - Drag and drop support
+   - Move validation for both interaction types
    - Visual feedback during interactions
    - Adjacent-only move validation
 
@@ -39,9 +43,10 @@ The project has reached a significant milestone with a fully playable match-thre
 
 6. Documentation:
    - Memory bank system
-   - README with setup instructions
+   - Comprehensive README
    - MIT License
    - Code comments and type definitions
+   - Project structure documentation
 
 ## In Progress
 1. Planning AI module architecture
@@ -65,6 +70,7 @@ The project has reached a significant milestone with a fully playable match-thre
    - Sound effects for interactions
    - Background music
    - Volume controls
+   - Mute option
 
 4. Additional Features:
    - Tutorial mode
@@ -73,11 +79,12 @@ The project has reached a significant milestone with a fully playable match-thre
    - Touch device optimization
 
 ## Known Issues
-None identified at this stage. Previous issues have been resolved:
-- Fixed cascade animation timing
-- Resolved score display layout shifts
-- Corrected initial board match prevention
-- Improved animation performance
+None identified at this stage. Recent improvements:
+- Fixed drag and drop behavior
+- Added move validation
+- Improved animation timing
+- Enhanced visual feedback
+- Stabilized game mechanics
 
 ## Next Milestone Goals
 1. Implement basic AI move calculation

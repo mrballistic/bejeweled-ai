@@ -1,50 +1,66 @@
 # Active Context: Bejeweled Clone with AI Mode
 
 ## Current Work Focus
-The project has evolved into a fully functional match-three game with modern features. Recent updates include:
-1. Enhanced animations using GSAP
-2. Drag and drop functionality
-3. Comprehensive documentation
-4. Project licensing
+The project has evolved into a polished match-three game with robust mechanics. Recent updates include:
+1. Strict move validation
+2. Enhanced drag and drop functionality
+3. Dynamic animation timing
+4. Comprehensive documentation updates
 
 ## Recent Changes
-1. Integrated GSAP for smoother animations:
-   - Dynamic duration scaling for cascades
-   - Bounce effects for falling jewels
-   - Improved match animations
-2. Added React DnD for drag and drop:
-   - Intuitive jewel swapping
-   - Visual feedback during drag
-   - Adjacent-only drop validation
-3. Fixed core gameplay issues:
-   - Prevented initial board matches
-   - Fixed cascade animation timing
-   - Stabilized score display layout
-4. Added project documentation:
+1. Added move validation:
+   - Pre-move match checking
+   - Invalid move rejection
+   - Move simulation before execution
+   - Visual feedback for rejected moves
+
+2. Enhanced animations:
+   - GSAP integration for smoother transitions
+   - Dynamic timing based on fall distance
+   - Custom drag preview
+   - Bounce effects for cascades
+
+3. Improved game mechanics:
+   - Consistent validation across click and drag
+   - Proper move rejection handling
+   - Optimized cascade animations
+   - Stable drag and drop behavior
+
+4. Updated documentation:
    - Comprehensive README
-   - MIT License
    - Updated memory bank
+   - Improved code comments
+   - Clear project structure
 
 ## Next Steps
 1. Implement AI module:
    - Move evaluation system
-   - Path finding
+   - Path finding algorithms
    - Strategy optimization
-2. Add sound effects for:
-   - Jewel swaps
-   - Match completions
+   - Difficulty levels
+
+2. Add sound effects:
+   - Match completion
+   - Invalid moves
    - Cascades
+   - Background music
+
 3. Enhance game features:
    - Special jewels
    - Power-ups
    - Level progression
+   - Achievement system
 
 ## Active Decisions
-1. Use GSAP for animations to ensure smooth performance
-2. Support both click and drag interactions for accessibility
-3. Maintain automatic theme detection based on system preferences
-4. Follow MIT licensing for open-source distribution
-5. Keep comprehensive documentation for future development
+1. Use GSAP for all animations to ensure consistency
+2. Implement strict move validation for better gameplay
+3. Support both click and drag interactions
+4. Maintain comprehensive documentation
+5. Follow Material-UI design patterns
 
 ## Current Issues
-None identified at this stage. Previous animation and layout issues have been resolved.
+None identified at this stage. Previous issues have been resolved:
+- Fixed drag and drop behavior
+- Improved animation timing
+- Added move validation
+- Enhanced visual feedback

@@ -4,6 +4,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import GameBoard from './components/GameBoard';
 import ScoreDisplay from './components/ScoreDisplay';
+import CustomDragLayer from './components/CustomDragLayer';
 import { ThemeProvider, useTheme } from './context/ThemeProvider';
 import { ScoreProvider } from './context/ScoreContext';
 
@@ -68,6 +69,7 @@ const AppContent: React.FC = () => {
             <ScoreDisplay />
           </Box>
         </Box>
+        <CustomDragLayer />
       </DndProvider>
     </MuiThemeProvider>
   );

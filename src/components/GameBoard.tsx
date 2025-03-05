@@ -99,7 +99,40 @@ const GameBoard: React.FC = () => {
     }
   };
 
+  const checkForMatches = (testBoard: (JewelType | null)[][]): boolean => {
+    const matches = findMatches(testBoard);
+    return matches.length > 0;
+  };
+
+  const trySwap = (boardCopy: (JewelType | null)[][], from: Position, to: Position): boolean => {
+    // Make the swap in a copy of the board
+    const fromJewel = boardCopy[from.y][from.x];
+    const toJewel = boardCopy[to.y][to.x];
+
+    if (!fromJewel || !toJewel) return false;
+
+    boardCopy[from.y][from.x] = { ...toJewel, position: from };
+    boardCopy[to.y][to.x] = { ...fromJewel, position: to };
+
+    // Check if the swap creates a match
+    return checkForMatches(boardCopy);
+  };
+
   const swapJewels = async (from: Position, to: Position) => {
+    // Test if the swap would create a match
+    const boardCopy = board.map(row => [...row]);
+    if (!trySwap(boardCopy, from, to)) {
+      // If no match would be created, animate the swap back
+      const fromElement = document.getElementById(`jewel-${from.x}-${from.y}`);
+      const toElement = document.getElementById(`jewel-${to.x}-${to.y}`);
+
+      if (fromElement && toElement) {
+        await animateSwap(fromElement, toElement);
+        await animateSwap(toElement, fromElement);
+      }
+      return;
+    }
+
     const newBoard = [...board];
     const fromJewel = newBoard[from.y][from.x];
     const toJewel = newBoard[to.y][to.x];
@@ -119,14 +152,9 @@ const GameBoard: React.FC = () => {
 
     setBoard(newBoard);
 
-    // Check for matches after swapping
+    // Process matches
     const matches = findMatches(newBoard as (JewelType | null)[][]);
-    if (matches.length > 0) {
-      await processMatches(newBoard as (JewelType | null)[][], matches);
-    } else {
-      // If no matches, reset combo
-      resetCombo();
-    }
+    await processMatches(newBoard as (JewelType | null)[][], matches);
   };
 
   const processMatches = async (currentBoard: (JewelType | null)[][], matches: any) => {
@@ -195,7 +223,7 @@ const GameBoard: React.FC = () => {
     }
   };
 
-  const { handleJewelSelect } = useJewelSwap(swapJewels);
+  const { handleJewelSelect, handleDragSwap } = useJewelSwap(swapJewels);
 
   return (
     <div 
@@ -215,6 +243,7 @@ const GameBoard: React.FC = () => {
             type={jewel.type}
             position={jewel.position}
             onSelect={handleJewelSelect}
+            onDragSwap={handleDragSwap}
           />
         ) : (
           <div
