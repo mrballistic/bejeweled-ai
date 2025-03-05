@@ -7,7 +7,7 @@
     "skipLibCheck": true,
 
     /* Bundler mode */
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
@@ -21,7 +21,16 @@
     "noUncheckedSideEffectImports": true,
 
     /* JSX Support */
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+
+    /* Path Mapping */
+    "baseUrl": ".",
+    "paths": {
+      "src/*": ["src/*"]
+    },
+
+    /* Synthetic Default Imports */
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src"]
 }

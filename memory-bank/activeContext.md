@@ -1,22 +1,29 @@
 # Active Context: Bejeweled Clone with AI Mode
 
 ## Current Work Focus
-The primary focus is on implementing the foundational game mechanics and UI for the Bejeweled Clone. This includes:
-1. Initializing the game board.
-2. Implementing jewel movement mechanics.
-3. Detecting matches and handling cascades.
+The primary focus is on implementing core game functionality and ensuring proper theme support. Recent updates include:
+1. Implementing automatic dark mode detection based on system preferences.
+2. Fixing CSS issues to properly apply dark mode styles.
+3. Investigating GameBoard functionality issues.
 
 ## Recent Changes
-1. The technical brief has been reviewed and organized into the memory bank.
-2. Core files (`projectbrief.md`, `productContext.md`, `systemPatterns.md`, `techContext.md`) have been created to document the project's foundation.
+1. Updated `ThemeProvider` to automatically detect and apply system theme preferences.
+2. Added CSS reset and viewport-height styles to ensure proper theme application.
+3. Removed manual theme toggle in favor of system preference detection.
+4. Fixed CSS specificity issues for theme styles.
 
 ## Next Steps
-1. Develop the `GameBoard` component to initialize and render the game board.
-2. Implement the `Jewel` component for individual game pieces.
-3. Create utility functions for match detection and cascade handling.
-4. Set up the `ScoreContext` for managing the player's score.
+1. Fix GameBoard functionality issues.
+2. Implement scoring logic and display.
+3. Add sound effects for interactions.
+4. Begin work on the AI module for automated gameplay.
 
 ## Active Decisions
-1. Use React Context for state management initially, with the option to migrate to Redux if needed for scalability.
-2. Prioritize responsive design to ensure compatibility across devices.
-3. Focus on efficient algorithms for match detection and cascade handling to optimize performance.
+1. Use system preferences for theme detection instead of manual toggle.
+2. Apply theme styles to both body and app root elements for consistent appearance.
+3. Focus on efficient algorithms for match detection and cascade handling.
+4. Enhance the user experience with animations and sound effects.
+
+## Current Issues
+1. GameBoard functionality needs investigation and fixes.
+2. Need to ensure proper contrast and visibility in dark mode for game elements.
