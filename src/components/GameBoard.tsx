@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Jewel from './Jewel.tsx';
 import useJewelSwap from '../hooks/useJewelSwap';
 import { findMatches } from '../utils/matchDetection';
@@ -20,6 +20,11 @@ interface JewelType {
 
 type NullableJewelType = JewelType | null;
 
+interface GameBoardProps {
+  hint: Position | null;
+  setHint: (hint: Position | null) => void;
+}
+
 const BOARD_SIZE = 8;
 const JEWEL_TYPES = ['💎', '⭐', '🔵', '🔴', '🟣', '🟡', '🟢', '🟠'];
 
@@ -28,8 +33,9 @@ const getRandomJewelType = (avoidTypes: string[] = []): string => {
   return availableTypes[Math.floor(Math.random() * availableTypes.length)];
 };
 
-const GameBoard: React.FC = () => {
+const GameBoard: React.FC<GameBoardProps> = ({ hint, setHint }) => {
   const [board, setBoard] = useState<NullableJewelType[][]>([]);
+  const isInitialized = useRef(false); // Track initialization status
   const { theme } = useTheme();
   const { addPoints, incrementCombo, resetCombo } = useScore();
 
@@ -73,9 +79,15 @@ const GameBoard: React.FC = () => {
   }, []);
 
   const initializeBoard = () => {
+    if (isInitialized.current) {
+      console.log('Board already initialized. Skipping reinitialization.');
+      return;
+    }
     const newBoard = createInitialBoard();
     setBoard(newBoard);
     resetCombo();
+    isInitialized.current = true; // Mark as initialized
+    console.log('Board initialized:', JSON.stringify(newBoard));
   };
 
   const updateJewelId = (jewel: JewelType, newPosition: Position): JewelType => {
@@ -99,131 +111,75 @@ const GameBoard: React.FC = () => {
     }
   };
 
-  const checkForMatches = (testBoard: (JewelType | null)[][]): boolean => {
-    const matches = findMatches(testBoard);
-    return matches.length > 0;
-  };
+  const handleSwap = (from: Position, to: Position) => {
+    console.log('Attempting swap between:', from, 'and', to);
 
-  const trySwap = (boardCopy: (JewelType | null)[][], from: Position, to: Position): boolean => {
-    // Make the swap in a copy of the board
-    const fromJewel = boardCopy[from.y][from.x];
-    const toJewel = boardCopy[to.y][to.x];
+    const newBoard = board.map(row => row.map(jewel => (jewel ? { ...jewel } : null)));
 
-    if (!fromJewel || !toJewel) return false;
+    // Perform the swap
+    const temp = newBoard[from.y][from.x];
+    newBoard[from.y][from.x] = newBoard[to.y][to.x];
+    newBoard[to.y][to.x] = temp;
 
-    boardCopy[from.y][from.x] = { ...toJewel, position: from };
-    boardCopy[to.y][to.x] = { ...fromJewel, position: to };
+    console.log('Board after swap:', JSON.stringify(newBoard));
 
-    // Check if the swap creates a match
-    return checkForMatches(boardCopy);
-  };
+    // Check for matches
+    const matches = findMatches(newBoard);
+    console.log('Matches found after swap:', matches);
 
-  const swapJewels = async (from: Position, to: Position) => {
-    // Test if the swap would create a match
-    const boardCopy = board.map(row => [...row]);
-    if (!trySwap(boardCopy, from, to)) {
-      // If no match would be created, animate the swap back
-      const fromElement = document.getElementById(`jewel-${from.x}-${from.y}`);
-      const toElement = document.getElementById(`jewel-${to.x}-${to.y}`);
-
-      if (fromElement && toElement) {
-        await animateSwap(fromElement, toElement);
-        await animateSwap(toElement, fromElement);
-      }
-      return;
+    if (matches.length > 0) {
+      console.log('Valid move. Updating board state.');
+      setBoard(newBoard);
+      handleMatches(matches, newBoard);
+    } else {
+      console.log('Invalid move. Reverting swap.');
     }
-
-    const newBoard = [...board];
-    const fromJewel = newBoard[from.y][from.x];
-    const toJewel = newBoard[to.y][to.x];
-
-    if (!fromJewel || !toJewel) return;
-
-    // Update jewel IDs and positions
-    newBoard[from.y][from.x] = updateJewelId(toJewel, from);
-    newBoard[to.y][to.x] = updateJewelId(fromJewel, to);
-
-    const fromElement = document.getElementById(`jewel-${from.x}-${from.y}`);
-    const toElement = document.getElementById(`jewel-${to.x}-${to.y}`);
-
-    if (fromElement && toElement) {
-      await animateSwap(fromElement, toElement);
-    }
-
-    setBoard(newBoard);
-
-    // Process matches
-    const matches = findMatches(newBoard as (JewelType | null)[][]);
-    await processMatches(newBoard as (JewelType | null)[][], matches);
   };
 
-  const processMatches = async (currentBoard: (JewelType | null)[][], matches: any) => {
-    // Calculate points for matches
-    matches.forEach((match: any) => {
-      const matchLength = match.jewels.length;
-      const points = calculateMatchPoints(matchLength);
-      addPoints(points);
-    });
-    incrementCombo();
+  const handleMatches = async (matches: { type: string; jewels: JewelType[] }[], newBoard: NullableJewelType[][]) => {
+    console.log('Handling matches:', matches);
 
-    // Animate matched jewels
-    const matchedElements = matches.flatMap((match: any) =>
-      match.jewels.map((jewel: JewelType) =>
-        document.getElementById(jewel.id)
-      )
-    );
+    // Collect elements for animation
+    const matchElements: HTMLElement[] = [];
+    matches.forEach(match => {
+      console.log('Inspecting match object:', match);
 
-    await animateMatch(
-      matchedElements.filter((el: Element | null): el is HTMLElement => el !== null)
-    );
-
-    // Remove matched jewels
-    matches.forEach((match: any) => {
-      match.jewels.forEach((jewel: JewelType) => {
+      // Remove matched jewels and collect their elements
+      match.jewels.forEach(jewel => {
         const { x, y } = jewel.position;
-        currentBoard[y][x] = null;
+        newBoard[y][x] = null;
+
+        const element = document.getElementById(`jewel-${x}-${y}`);
+        if (element) {
+          matchElements.push(element);
+        }
       });
     });
 
-    // Handle cascades
-    const cascadedBoard = handleCascade(currentBoard);
+    console.log('Board after removing matches:', JSON.stringify(newBoard));
 
-    // Update IDs for cascaded jewels
-    for (let y = 0; y < BOARD_SIZE; y++) {
-      for (let x = 0; x < BOARD_SIZE; x++) {
-        if (cascadedBoard[y][x]) {
-          cascadedBoard[y][x] = updateJewelId(cascadedBoard[y][x]!, { x, y });
+    // Trigger animations
+    await animateMatch(matchElements);
+    const cascadedBoard = handleCascade(newBoard);
+
+    // Collect elements for cascade animation
+    const cascadeElements: HTMLElement[] = [];
+    cascadedBoard.flat().forEach(jewel => {
+      if (jewel) {
+        const { x, y } = jewel.position;
+        const element = document.getElementById(`jewel-${x}-${y}`);
+        if (element) {
+          cascadeElements.push(element);
         }
       }
-    }
+    });
 
-    // Animate cascades
-    const cascadeElements = cascadedBoard.flatMap((row, y) =>
-      row.map((jewel, x) => {
-        if (jewel && !board[y][x]) {
-          return document.getElementById(jewel.id);
-        }
-        return null;
-      })
-    );
-
-    await animateCascade(
-      cascadeElements.filter((el: Element | null): el is HTMLElement => el !== null)
-    );
-
+    await animateCascade(cascadeElements);
     setBoard(cascadedBoard);
-
-    // Check for new matches after cascade
-    const newMatches = findMatches(cascadedBoard);
-    if (newMatches.length > 0) {
-      await processMatches(cascadedBoard, newMatches);
-    } else {
-      // Reset combo if no more matches
-      resetCombo();
-    }
+    console.log('Board after cascades:', JSON.stringify(cascadedBoard));
   };
 
-  const { handleJewelSelect, handleDragSwap } = useJewelSwap(swapJewels);
+  const { handleJewelSelect, handleDragSwap } = useJewelSwap(handleSwap);
 
   return (
     <div 
@@ -244,6 +200,7 @@ const GameBoard: React.FC = () => {
             position={jewel.position}
             onSelect={handleJewelSelect}
             onDragSwap={handleDragSwap}
+            isHint={hint?.x === jewel.position.x && hint?.y === jewel.position.y}
           />
         ) : (
           <div

@@ -11,6 +11,7 @@ A modern implementation of the classic Bejeweled game with AI capabilities, buil
 - 💯 Score tracking with combo multiplier system
 - 🎨 Material-UI components and styling
 - 🤖 AI mode (coming soon)
+- 🌟 Cascading and match animations for enhanced visual feedback
 
 ## Game Rules
 
@@ -32,7 +33,7 @@ A modern implementation of the classic Bejeweled game with AI capabilities, buil
 - React 18+
 - TypeScript
 - Material-UI
-- GSAP (GreenSock Animation Platform)
+- GSAP (GreenSock Animation Platform) for animations
 - React DnD (Drag and Drop)
 
 ## Getting Started
@@ -86,6 +87,7 @@ src/
 - Memory Bank system for documentation
 - Strict move validation
 - Dynamic animation timing
+- Cascading and match animations
 
 ## Contributing
 

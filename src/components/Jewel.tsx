@@ -17,9 +17,10 @@ interface JewelProps {
   position: Position;
   onSelect: (position: Position) => void;
   onDragSwap?: (from: Position, to: Position) => void;
+  isHint?: boolean;
 }
 
-const Jewel: React.FC<JewelProps> = ({ type, position, onSelect, onDragSwap }) => {
+const Jewel: React.FC<JewelProps> = ({ type, position, onSelect, onDragSwap, isHint }) => {
   const { theme } = useTheme();
 
   const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
@@ -75,9 +76,11 @@ const Jewel: React.FC<JewelProps> = ({ type, position, onSelect, onDragSwap }) =
         fontSize: '2rem',
         cursor: 'move',
         opacity: isDragging ? 0.5 : 1,
-        backgroundColor: isOver 
-          ? (theme === 'dark' ? '#444' : '#e3f2fd')
-          : (theme === 'dark' ? '#222' : '#fff'),
+        backgroundColor: isHint
+          ? (theme === 'dark' ? '#ffeb3b' : '#fff59d') // Highlight color for hints
+          : isOver 
+            ? (theme === 'dark' ? '#444' : '#e3f2fd')
+            : (theme === 'dark' ? '#222' : '#fff'),
         transform: isOver ? 'scale(1.1)' : 'scale(1)',
         transition: 'transform 0.2s, background-color 0.2s',
         userSelect: 'none',

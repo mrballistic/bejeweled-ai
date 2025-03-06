@@ -26,6 +26,7 @@ The project has reached a significant milestone with a fully playable match-thre
    - Match disappearing effects
    - Bounce effects for falling jewels
    - Invalid move feedback
+   - Integrated animations for matches and cascades
 
 4. Interactions:
    - Click-to-select mechanics
@@ -85,6 +86,7 @@ None identified at this stage. Recent improvements:
 - Improved animation timing
 - Enhanced visual feedback
 - Stabilized game mechanics
+- Resolved cascading and animation issues
 
 ## Next Milestone Goals
 1. Implement basic AI move calculation

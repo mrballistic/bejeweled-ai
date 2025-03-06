@@ -1,5 +1,5 @@
-import React from 'react';
-import { Typography, Box, ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material';
+import React, { useState } from 'react';
+import { Typography, Box, Button, ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import GameBoard from './components/GameBoard';
@@ -10,7 +10,8 @@ import { ScoreProvider } from './context/ScoreContext';
 
 const AppContent: React.FC = () => {
   const { theme } = useTheme();
-  
+  const [hint, setHint] = useState<{ x: number; y: number } | null>(null);
+
   const muiTheme = createTheme({
     palette: {
       mode: theme,
@@ -24,6 +25,25 @@ const AppContent: React.FC = () => {
       },
     },
   });
+
+  const handleShowHint = () => {
+    console.log('Show Hint button clicked');
+    setHint((prevHint) => {
+      if (!prevHint) {
+        console.log('Calculating hint...');
+        const newHint = { x: 0, y: 0 }; // Replace with actual hint logic
+        console.log('Hint calculated:', newHint);
+        setTimeout(() => {
+          console.log('Clearing hint');
+          setHint(null); // Remove the hint after 3 seconds
+        }, 3000);
+        return newHint;
+      }
+      return prevHint;
+    });
+  };
+
+  console.log('Rendering AppContent...');
 
   return (
     <MuiThemeProvider theme={muiTheme}>
@@ -41,7 +61,7 @@ const AppContent: React.FC = () => {
           }}
         >
           <Typography 
-            variant="h2" 
+            variant="h3" 
             component="h1" 
             gutterBottom
             sx={{
@@ -55,7 +75,7 @@ const AppContent: React.FC = () => {
               WebkitTextFillColor: 'transparent',
             }}
           >
-            Bejeweled.ai
+            ✨Bejeweled.ai✨
           </Typography>
           <Box
             sx={{
@@ -65,8 +85,21 @@ const AppContent: React.FC = () => {
               gap: '2rem',
             }}
           >
-            <GameBoard />
+            <GameBoard hint={hint} setHint={setHint} />
             <ScoreDisplay />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleShowHint}
+              sx={{
+                marginTop: '1rem',
+                padding: '0.5rem 2rem',
+                fontSize: '1rem',
+                fontWeight: 'bold',
+              }}
+            >
+              Show Hint
+            </Button>
           </Box>
         </Box>
         <CustomDragLayer />
@@ -76,6 +109,7 @@ const AppContent: React.FC = () => {
 };
 
 const App: React.FC = () => {
+  console.log('Rendering App...');
   return (
     <ThemeProvider>
       <ScoreProvider>

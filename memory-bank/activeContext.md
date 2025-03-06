@@ -6,6 +6,7 @@ The project has evolved into a polished match-three game with robust mechanics. 
 2. Enhanced drag and drop functionality
 3. Dynamic animation timing
 4. Comprehensive documentation updates
+5. Cascading and match animations
 
 ## Recent Changes
 1. Added move validation:
@@ -19,6 +20,7 @@ The project has evolved into a polished match-three game with robust mechanics. 
    - Dynamic timing based on fall distance
    - Custom drag preview
    - Bounce effects for cascades
+   - Match disappearing effects
 
 3. Improved game mechanics:
    - Consistent validation across click and drag
@@ -31,6 +33,10 @@ The project has evolved into a polished match-three game with robust mechanics. 
    - Updated memory bank
    - Improved code comments
    - Clear project structure
+
+5. Resolved cascading and animation issues:
+   - Integrated animations for matches and cascades
+   - Ensured smooth transitions and visual feedback
 
 ## Next Steps
 1. Implement AI module:
@@ -64,3 +70,4 @@ None identified at this stage. Previous issues have been resolved:
 - Improved animation timing
 - Added move validation
 - Enhanced visual feedback
+- Resolved cascading and animation issues
