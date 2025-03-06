@@ -14,7 +14,8 @@ interface Match {
 const BOARD_SIZE = 8;
 
 export const findMatches = (board: (Jewel | null)[][]): Match[] => {
-  const matches: Match[] = [];
+  console.log('findMatches called with board:', JSON.stringify(board));
+const matches: Match[] = [];
 
   // Check horizontal matches
   for (let y = 0; y < BOARD_SIZE; y++) {
@@ -35,6 +36,7 @@ export const findMatches = (board: (Jewel | null)[][]): Match[] => {
           jewels: [jewel1, jewel2, jewel3],
         };
         matches.push(match);
+        console.log('Horizontal match found:', match);
       }
     }
   }
@@ -58,9 +60,11 @@ export const findMatches = (board: (Jewel | null)[][]): Match[] => {
           jewels: [jewel1, jewel2, jewel3],
         };
         matches.push(match);
+        console.log('Vertical match found:', match);
       }
     }
   }
 
+  console.log('All matches found:', matches);
   return matches;
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import Jewel from './Jewel.tsx';
 import useJewelSwap from '../hooks/useJewelSwap';
 import { findMatches } from '../utils/matchDetection';
@@ -33,11 +33,63 @@ const getRandomJewelType = (avoidTypes: string[] = []): string => {
   return availableTypes[Math.floor(Math.random() * availableTypes.length)];
 };
 
-const GameBoard: React.FC<GameBoardProps> = ({ hint, setHint }) => {
+export const findHint = (board: NullableJewelType[][]): Position | null => {
+  console.log('Finding hints...', JSON.stringify(board));
+  const allHints: Position[] = [];
+
+  for (let y = 0; y < BOARD_SIZE; y++) {
+    for (let x = 0; x < BOARD_SIZE; x++) {
+      const current = board[y][x];
+      if (!current) {
+        console.log(`Skipping empty cell at (${x}, ${y})`);
+        continue;
+      }
+
+      // Check adjacent positions
+      const adjacentPositions: Position[] = [
+        { x: x + 1, y },
+        { x: x - 1, y },
+        { x, y: y + 1 },
+        { x, y: y - 1 },
+      ];
+
+      for (const pos of adjacentPositions) {
+        if (pos.x < 0 || pos.x >= BOARD_SIZE || pos.y < 0 || pos.y >= BOARD_SIZE) continue;
+
+        const testBoard = board.map(row => row.map(jewel => (jewel ? { ...jewel } : null)));
+        const target = testBoard[pos.y][pos.x];
+        if (!target) {
+          console.log(`Skipping invalid target at (${pos.x}, ${pos.y})`);
+          continue;
+        }
+
+        // Simulate swap
+        console.log(`Simulating swap between (${x}, ${y}) and (${pos.x}, ${pos.y})`);
+        testBoard[y][x] = { ...target, position: { x, y } };
+        testBoard[pos.y][pos.x] = { ...current, position: pos };
+
+        // Check for matches
+        console.log('Calling findMatches with testBoard:', JSON.stringify(testBoard));
+        const matches = findMatches(testBoard);
+        if (matches.length > 0) {
+          console.log('Valid hint found:', { x, y }, '->', pos);
+          allHints.push({ x, y });
+        }
+      }
+    }
+  }
+
+  console.log('All hints found:', allHints, 'Board state:', JSON.stringify(board));
+  return allHints.length > 0 ? allHints[0] : null;
+};
+
+const GameBoard = forwardRef<NullableJewelType[][], GameBoardProps>(({ hint, setHint }, ref) => {
   const [board, setBoard] = useState<NullableJewelType[][]>([]);
   const isInitialized = useRef(false); // Track initialization status
   const { theme } = useTheme();
   const { addPoints, incrementCombo, resetCombo } = useScore();
+
+  useImperativeHandle(ref, () => board, [board]);
 
   const createInitialBoard = (): JewelType[][] => {
     const newBoard: JewelType[][] = Array(BOARD_SIZE).fill(null).map((_, y) =>
@@ -87,7 +139,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ hint, setHint }) => {
     setBoard(newBoard);
     resetCombo();
     isInitialized.current = true; // Mark as initialized
-    console.log('Board initialized:', JSON.stringify(newBoard));
+    console.log('Board initialized:', JSON.stringify(newBoard), 'Setting initial board state...');
   };
 
   const updateJewelId = (jewel: JewelType, newPosition: Position): JewelType => {
@@ -217,6 +269,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ hint, setHint }) => {
       )}
     </div>
   );
-};
+});
 
 export default GameBoard;

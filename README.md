@@ -1,108 +1,77 @@
-# Bejeweled.ai 🎮
+# Bejeweled.ai
 
-A modern implementation of the classic Bejeweled game with AI capabilities, built using React and TypeScript.
+## Overview
+Bejeweled.ai is a web-based match-three puzzle game inspired by Bejeweled 2. It features two modes:
+- **Player Mode**: Engage in classic match-three gameplay with drag-and-drop mechanics, score tracking, and level progression.
+- **AI Mode**: Watch the AI play the game with visualized strategies and performance metrics.
+
+The game is built using **React** and **Material-UI (MUI)**, with emoji-based game pieces for simplicity and universal compatibility.
+
+---
 
 ## Features
 
-- 🎯 Classic match-three gameplay with strict move validation
-- 🌓 Automatic dark/light mode based on system preferences
-- ✨ Smooth GSAP animations with dynamic timing
-- 🎯 Intuitive drag and drop interface
-- 💯 Score tracking with combo multiplier system
-- 🎨 Material-UI components and styling
-- 🤖 AI mode (coming soon)
-- 🌟 Cascading and match animations for enhanced visual feedback
+### Player Mode
+- Drag-and-drop or click-to-swap mechanics.
+- Score tracking and time-based gameplay.
+- Special gems and power-ups.
+- Level progression with increasing difficulty.
 
-## Game Rules
+### AI Mode
+- Automated gameplay with visual representation of AI decisions.
+- Adjustable speed controls.
+- Strategy display and performance metrics.
 
-1. Match three or more identical jewels in a row or column
-2. Create matches by swapping adjacent jewels
-3. Only valid moves that create matches are allowed
-4. Longer matches earn more points
-5. Chain reactions (combos) multiply your score
+---
 
-## Scoring System
+## Recent Updates
 
-- 3 matching jewels: 50 points
-- 4 matching jewels: 100 points
-- 5 matching jewels: 200 points
-- Combo multiplier: 1.5x for each consecutive match
+### Hint System
+- **New Functionality**: Added a `findHint` function to calculate potential moves on the game board.
+- **Integration**: The "Show Hint" button now displays hints for 3 seconds.
+- **Technical Enhancements**: 
+  - Utilized `React.forwardRef` and `useImperativeHandle` to expose the `board` state from the `GameBoard` component.
+  - Enabled the parent component to access the `board` state for hint calculations.
 
-## Technologies
+---
 
-- React 18+
-- TypeScript
-- Material-UI
-- GSAP (GreenSock Animation Platform) for animations
-- React DnD (Drag and Drop)
-
-## Getting Started
+## Development Setup
 
 ### Prerequisites
+- Node.js (v16 or higher)
+- npm (v7 or higher)
 
-- Node.js 14+
-- npm or yarn
+### Steps
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-repo/bejeweled-ai.git
+   cd bejeweled-ai
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+4. Open the game in your browser at `http://localhost:3000`.
 
-### Installation
+---
 
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/bejeweled-ai.git
+## Future Plans
+- **Gemini Integration**: Advanced match detection and AI enhancements.
+- **New Features**:
+  - Multiple AI difficulty levels.
+  - Online multiplayer functionality.
+  - Leaderboard and achievement systems.
 
-# Navigate to project directory
-cd bejeweled-ai
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-## Project Structure
-
-```
-src/
-├── components/        # React components
-│   ├── GameBoard     # Main game logic
-│   ├── Jewel        # Individual jewel component
-│   └── ScoreDisplay # Score and combo display
-├── context/          # React context providers
-│   ├── ThemeProvider # Dark/light mode handling
-│   └── ScoreContext # Score management
-├── utils/           # Utility functions
-│   ├── animations   # GSAP animations
-│   ├── matchDetection # Match finding logic
-│   └── cascadeHandler # Jewel falling mechanics
-├── hooks/           # Custom React hooks
-└── memory-bank/     # Project documentation
-```
-
-## Development Features
-
-- TypeScript for type safety
-- Material-UI for consistent styling
-- GSAP for smooth animations
-- React DnD for intuitive interactions
-- Memory Bank system for documentation
-- Strict move validation
-- Dynamic animation timing
-- Cascading and match animations
+---
 
 ## Contributing
+Contributions are welcome! Please fork the repository and submit a pull request with your changes.
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+---
 
 ## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Inspired by the original Bejeweled game
-- Built with modern web technologies
-- Designed for both desktop and mobile use
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Typography, Box, Button, ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import GameBoard from './components/GameBoard';
+import GameBoard, { findHint } from './components/GameBoard';
 import ScoreDisplay from './components/ScoreDisplay';
 import CustomDragLayer from './components/CustomDragLayer';
 import { ThemeProvider, useTheme } from './context/ThemeProvider';
@@ -11,6 +11,7 @@ import { ScoreProvider } from './context/ScoreContext';
 const AppContent: React.FC = () => {
   const { theme } = useTheme();
   const [hint, setHint] = useState<{ x: number; y: number } | null>(null);
+  const boardRef = useRef<null | any>(null);
 
   const muiTheme = createTheme({
     palette: {
@@ -29,9 +30,9 @@ const AppContent: React.FC = () => {
   const handleShowHint = () => {
     console.log('Show Hint button clicked');
     setHint((prevHint) => {
-      if (!prevHint) {
+      if (!prevHint && boardRef.current) {
         console.log('Calculating hint...');
-        const newHint = { x: 0, y: 0 }; // Replace with actual hint logic
+        const newHint = findHint(boardRef.current);
         console.log('Hint calculated:', newHint);
         setTimeout(() => {
           console.log('Clearing hint');
@@ -85,7 +86,7 @@ const AppContent: React.FC = () => {
               gap: '2rem',
             }}
           >
-            <GameBoard hint={hint} setHint={setHint} />
+            <GameBoard ref={boardRef} hint={hint} setHint={setHint} />
             <ScoreDisplay />
             <Button
               variant="contained"
