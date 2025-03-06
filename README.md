@@ -15,6 +15,7 @@ https://mrballistic.github.io/bejeweled-ai/
 
 ### 🎮 Player Mode
 - Drag-and-drop or click-to-swap mechanics with visual feedback
+- Touch support for mobile devices
 - Score tracking and time-based gameplay
 - Animated match and cascade effects
 - Hint system for finding possible moves
@@ -30,20 +31,37 @@ https://mrballistic.github.io/bejeweled-ai/
 
 ## ✨ Recent Updates
 
+### 📱 Mobile Support & Touch Interactions
+- **Multi-Backend Support**: 
+  - Seamless switching between mouse and touch interactions
+  - Responsive design for all screen sizes
+  - Touch-specific visual feedback and animations
+- **Mobile Optimizations**:
+  - Dynamic sizing based on viewport
+  - Touch-friendly UI elements
+  - Improved spacing and layout for mobile devices
+
 ### 🎯 Match Detection & Visual Improvements
 - **Enhanced Match Detection**: Improved system that properly handles consecutive matches
 - **Visual Feedback**:
   - Added blue glow effect for selected jewels
   - Smooth animations for both valid and invalid moves
   - Clear visual indication of match cascades
-- **Deployment Optimization**: Updated for better GitHub Pages compatibility with relative asset paths
+  - Touch ripple effects for mobile interactions
+
+### 🚀 Deployment Improvements
+- **Streamlined Process**: Updated deploy script with:
+  - Automatic dependency installation
+  - GitHub Pages optimization
+  - Main branch synchronization
+  - Asset path handling for reliable deployment
 
 ### 🔍 Hint System
-- **New Functionality**: Added a `findHint` function to calculate potential moves on the game board
-- **Integration**: The "Show Hint" button now displays hints for 3 seconds
+- **New Functionality**: Added a `findHint` function to calculate potential moves
+- **Integration**: The "Show Hint" button displays hints for 3 seconds
 - **Technical Enhancements**: 
-  - Utilized `React.forwardRef` and `useImperativeHandle` to expose the `board` state from the `GameBoard` component
-  - Enabled the parent component to access the `board` state for hint calculations
+  - Utilized `React.forwardRef` and `useImperativeHandle` for board state access
+  - Mobile-friendly hint display
 
 ---
 
@@ -76,20 +94,19 @@ https://mrballistic.github.io/bejeweled-ai/
 ### 📦 GitHub Pages
 To deploy the latest version to GitHub Pages:
 
-1. Ensure all changes are committed to the main branch
+1. Ensure all changes are committed
 2. Run the deployment script:
    ```bash
    ./deploy.sh
    ```
 
-The script will:
+The script will automatically:
+- Install all dependencies
 - Create a fresh gh-pages branch
-- Install dependencies
-- Build a production version with relative paths
-- Clean up unnecessary files
-- Move the build to the root directory
-- Push to GitHub Pages
-- Return to your original branch
+- Build with relative asset paths
+- Deploy to GitHub Pages
+- Push changes to main branch
+- Handle all necessary cleanup
 
 The deployed site will be available at your GitHub Pages URL.
 
@@ -101,6 +118,10 @@ The deployed site will be available at your GitHub Pages URL.
   - 🔄 Chain reaction bonuses for cascading matches
   - 🌈 Special jewels for matching 4 or 5 in a row
   - 🏆 Score multipliers and combo system
+  - 📱 Mobile-specific features:
+    - Haptic feedback for matches
+    - Gesture controls for hints
+    - Portrait/landscape optimization
   - 🎮 Multiple AI difficulty levels
   - 🌐 Online multiplayer functionality
   - 🥇 Leaderboard and achievement systems

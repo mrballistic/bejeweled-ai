@@ -4,7 +4,7 @@
 1. **⚛️ Frontend Framework**: React 18+
 2. **🎨 UI Library**: Material-UI (MUI)
 3. **📦 State Management**: React Context
-4. **🖱️ Drag-and-Drop**: React DnD with custom drag layer
+4. **🖱️ Drag-and-Drop**: React DnD with multi-backend support
 5. **✨ Animations**: GSAP for smooth transitions
 6. **🚀 Build Tool**: Vite
 7. **🌐 Deployment**: GitHub Pages
@@ -21,6 +21,8 @@
   "@emotion/styled": "^11.x",
   "react-dnd": "^16.x",
   "react-dnd-html5-backend": "^16.x",
+  "react-dnd-touch-backend": "^16.x",
+  "react-dnd-multi-backend": "^8.x",
   "gsap": "^3.x",
   "vite": "^6.x",
   "@vitejs/plugin-react": "^4.x"
@@ -30,6 +32,7 @@
 ### 🛠️ Environment
 - 🌐 Node.js v16+ and npm v7+
 - 🖥️ Modern web browsers with ES6+ support
+- 📱 Mobile device testing environment
 - ✏️ IDE: Visual Studio Code with TypeScript support
 - 🔧 Git for version control
 
@@ -72,14 +75,18 @@ export default defineConfig({
 ## ⚙️ Technical Constraints
 1. 🌐 Browser Compatibility:
    - Modern browsers with ES6+ support
-   - Touch device support for drag-and-drop
+   - Touch device support for mobile interactions
+   - Progressive Web App capabilities
 2. ⚡ Performance:
    - Smooth animations at 60fps
    - Efficient match detection for large cascades
+   - Touch event optimization
+   - Mobile battery consideration
 3. 🎨 Design:
    - Responsive layout for all screen sizes
    - Dark/light theme support
    - Accessible color contrasts
+   - Touch-friendly UI elements
 
 ---
 
@@ -87,10 +94,15 @@ export default defineConfig({
 
 ### Core Dependencies
 1. **⚛️ React**: UI framework with hooks and context
-2. **🎨 Material-UI**: Theming and styled components
-3. **🖱️ React DnD**: Drag-and-drop with custom preview
+2. **🎨 Material-UI**: Responsive theming and components
+3. **🖱️ React DnD**: Multi-backend drag-and-drop support
 4. **✨ GSAP**: Advanced animations and transitions
 5. **🎨 Emotion**: CSS-in-JS for MUI styling
+
+### Mobile-Specific Dependencies
+1. **📱 React DnD Touch Backend**: Touch interaction support
+2. **🔄 React DnD Multi Backend**: Input method switching
+3. **🎨 Material-UI Responsive**: Mobile-first design utilities
 
 ### Development Dependencies
 1. **🏗️ Vite**: Fast build tool and dev server
@@ -105,13 +117,23 @@ export default defineConfig({
    - Vite with relative asset paths
    - TypeScript compilation
    - Asset optimization
+   - Mobile-specific optimizations
 
 2. **GitHub Pages Setup**:
-   - Custom deploy script
-   - Orphan branch approach
+   - Automated deploy script
+   - Dependency management
+   - Branch synchronization
    - Asset path handling
 
 3. **CI/CD**:
-   - Manual deployment via `deploy.sh`
+   - Automated deployment via `deploy.sh`
+   - Dependency installation
    - Build validation
    - Asset verification
+   - Branch synchronization
+
+4. **Mobile Testing**:
+   - Touch interaction validation
+   - Responsive design verification
+   - Performance monitoring
+   - Battery usage optimization

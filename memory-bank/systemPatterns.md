@@ -1,40 +1,42 @@
 # System Patterns: Bejeweled Clone with AI Mode
 
 ## 🏗️ System Architecture
-The system is divided into two main components:
-1. **🖥️ Frontend**: Built using React and Material-UI (MUI) for a responsive and modern user interface.
-2. **🎮 Game Engine**: Handles core game mechanics, including match detection, cascade effects, and scoring.
+The system is divided into three main components:
+1. **🖥️ Frontend**: React and Material-UI for responsive UI
+2. **🎮 Game Engine**: Core game mechanics and state management
+3. **📱 Mobile Layer**: Touch interactions and responsive design
 
 ---
 
 ## 🔑 Key Technical Decisions
-1. **⚛️ Frontend Framework**: React 18+ is used for its component-based architecture and state management capabilities.
-2. **🎨 UI Library**: Material-UI ensures a consistent and polished design across devices.
-3. **📦 State Management**: React Context for game state and theme management.
-4. **🎯 Match Detection**: Center-first approach for handling consecutive matches.
-5. **✨ Animation System**: GSAP for smooth, performant animations.
-6. **🚀 Deployment**: GitHub Pages with relative asset paths for reliable hosting.
+1. **⚛️ Frontend Framework**: React 18+ for component-based architecture
+2. **🎨 UI Library**: Material-UI for consistent, responsive design
+3. **📦 State Management**: React Context for game and theme state
+4. **🎯 Match Detection**: Center-first approach for consecutive matches
+5. **✨ Animation System**: GSAP for smooth, performant animations
+6. **📱 Mobile Support**: Multi-backend drag-and-drop for touch/mouse
+7. **🚀 Deployment**: Automated GitHub Pages with relative paths
 
 ---
 
 ## 🧩 Design Patterns
 
 ### 🧱 Component Architecture
-1. **Component-Based Design**: UI structured into reusable React components:
-   - `GameBoard`: Main game grid and state management
-   - `Jewel`: Individual game pieces with drag-and-drop
-   - `CustomDragLayer`: Enhanced drag preview
-   - `ScoreDisplay`: Score and combo tracking
+1. **Component-Based Design**:
+   - `GameBoard`: Responsive grid with dynamic sizing
+   - `Jewel`: Touch and mouse interaction handling
+   - `CustomDragLayer`: Enhanced drag preview with touch feedback
+   - `ScoreDisplay`: Responsive score and combo tracking
 
 2. **⚙️ Custom Hooks**:
-   - `useJewelSwap`: Manages jewel swapping with animation states
+   - `useJewelSwap`: Manages jewel swapping with touch support
    - `useScore`: Handles scoring and combo system
    - `useTheme`: Controls dark/light theme switching
 
 3. **🔄 State Management**:
-   - Context providers for score and theme
-   - Ref forwarding for board state access
-   - Imperative handle for external board control
+   - Context providers for global state
+   - Ref forwarding for board access
+   - Imperative handle for external control
 
 ### 🎮 Game Logic Patterns
 
@@ -46,17 +48,41 @@ The system is divided into two main components:
 
 2. **✨ Animation Patterns**:
    - Sequential animation flow:
-     1. Swap animation
+     1. Swap/touch animation
      2. Match highlight
      3. Match disappear
      4. Cascade effect
-   - Invalid move feedback
+   - Touch feedback animations
    - Selected jewel highlighting
+   - Mobile-optimized transitions
 
-3. **🔄 Game Flow Control**:
-   - Async/await for animation sequences
-   - State locking during animations
+3. **📱 Mobile Interaction Patterns**:
+   - Touch-to-select with visual feedback
+   - Drag-to-swap with preview
+   - Multi-backend support for input methods
+   - Responsive sizing and layout
+   - Touch event optimization
+
+4. **🔄 Game Flow Control**:
+   - Async/await for animations
+   - State locking during interactions
    - Combo tracking for cascades
+   - Touch event debouncing
+
+### 🚀 Deployment Patterns
+
+1. **📦 Build Process**:
+   - Dependency management
+   - Asset optimization
+   - Path configuration
+   - Branch synchronization
+
+2. **🔄 Continuous Deployment**:
+   - Automated dependency installation
+   - Clean branch creation
+   - Asset path handling
+   - Branch synchronization
+   - Cleanup procedures
 
 ---
 
@@ -64,27 +90,31 @@ The system is divided into two main components:
 
 ### 🎲 Core Components
 1. **GameBoard**:
-   - Manages board state and game logic
+   - Manages responsive grid layout
+   - Handles touch and mouse events
    - Coordinates with animation system
-   - Handles match detection and cascades
-   - Forwards board state for hint system
+   - Manages match detection and cascades
 
 2. **💎 Jewel**:
-   - Handles drag-and-drop interactions
+   - Handles multi-input interactions
    - Manages visual feedback states
-   - Communicates with GameBoard for moves
+   - Provides touch-specific animations
+   - Communicates with GameBoard
 
 3. **📊 Score System**:
    - Tracks points and combos
    - Provides global score context
    - Handles multipliers and bonuses
+   - Responsive display layout
 
 4. **✨ Animation System**:
-   - Coordinates multiple animation sequences
-   - Manages timing and transitions
-   - Provides visual feedback for game events
+   - Coordinates animation sequences
+   - Manages touch feedback
+   - Handles transition timing
+   - Provides mobile-optimized effects
 
 5. **🎨 Theme System**:
    - Controls dark/light mode
    - Manages consistent styling
    - Handles visual transitions
+   - Supports mobile themes
