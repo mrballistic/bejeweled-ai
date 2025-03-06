@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
+import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import type { ForwardedRef } from 'react';
 import Jewel from './Jewel.tsx';
 import useJewelSwap from '../hooks/useJewelSwap';
 import { findMatches } from '../utils/matchDetection';
 import { handleCascade } from '../utils/cascadeHandler';
-import { animateSwap, animateMatch, animateCascade } from '../utils/animations';
+import { animateMatch, animateCascade } from '../utils/animations';
 import { useTheme } from '../context/ThemeProvider';
 import { useScore, POINTS } from '../context/ScoreContext';
 
@@ -85,7 +85,7 @@ export const findHint = (board: NullableJewelType[][]): Position | null => {
 };
 
 const GameBoard = forwardRef<NullableJewelType[][], GameBoardProps>((
-  { hint, setHint }: GameBoardProps,
+  { hint }: GameBoardProps,
   ref: ForwardedRef<NullableJewelType[][]>
 ) => {
   const [board, setBoard] = useState<NullableJewelType[][]>([]);
@@ -144,14 +144,6 @@ const GameBoard = forwardRef<NullableJewelType[][], GameBoardProps>((
     resetCombo();
     isInitialized.current = true; // Mark as initialized
     console.log('Board initialized:', JSON.stringify(newBoard), 'Setting initial board state...');
-  };
-
-  const updateJewelId = (jewel: JewelType, newPosition: Position): JewelType => {
-    return {
-      ...jewel,
-      id: `jewel-${newPosition.x}-${newPosition.y}`,
-      position: newPosition,
-    };
   };
 
   const calculateMatchPoints = (matchLength: number): number => {
@@ -288,7 +280,7 @@ const GameBoard = forwardRef<NullableJewelType[][], GameBoardProps>((
     }
   };
 
-  const handleMatches = async (matches: { type: string; jewels: JewelType[] }[], newBoard: NullableJewelType[][]) => {
+  const handleMatches = async (_matches: { type: string; jewels: JewelType[] }[], newBoard: NullableJewelType[][]) => {
     await processMatchesAndCascade(newBoard);
   };
 

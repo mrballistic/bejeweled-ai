@@ -1,6 +1,5 @@
 import React from 'react';
-import { useDragLayer } from 'react-dnd';
-import { ItemTypes } from './Jewel';
+import { useDragLayer } from 'react-dnd/dist/hooks';
 
 const CustomDragLayer: React.FC = () => {
   const { isDragging, currentOffset, item } = useDragLayer((monitor) => ({
