@@ -38,7 +38,7 @@ export const handleCascade = (board: NullableJewel[][]): NullableJewel[][] => {
           console.log(`Moving jewel from (${x}, ${topY}) to (${x}, ${bottomY})`);
           const movedJewel = {
             ...newBoard[topY][x]!,
-            id: `jewel-${x}-${bottomY}-${Date.now()}`, // Update ID for the new position
+            id: `jewel-${x}-${bottomY}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
             position: { x, y: bottomY },
           };
           newBoard[bottomY][x] = movedJewel;
@@ -58,7 +58,7 @@ export const handleCascade = (board: NullableJewel[][]): NullableJewel[][] => {
       if (!newBoard[y][x]) {
         console.log(`Filling empty space at (${x}, ${y})`);
         const newJewel = {
-          id: `jewel-${x}-${y}-${Date.now()}`,
+          id: `jewel-${x}-${y}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           type: getRandomJewelType(),
           position: { x, y },
         } as Jewel;

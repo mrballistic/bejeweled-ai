@@ -64,7 +64,7 @@ const Jewel: React.FC<JewelProps> = ({ type, position, onSelect, onDragSwap, isH
       ref={(node) => {
         drag(drop(node));
       }}
-      id={`jewel-${position.x}-${position.y}`}
+      data-position={`${position.x}-${position.y}`}
       style={{
         width: 50,
         height: 50,
