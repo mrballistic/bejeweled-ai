@@ -7,6 +7,10 @@ set -e
 CURRENT_BRANCH=$(git branch --show-current)
 echo "Current branch is $CURRENT_BRANCH"
 
+# Install dependencies first
+echo "Installing dependencies..."
+npm install
+
 # Delete the local gh-pages branch if it exists
 if git show-ref --verify --quiet refs/heads/gh-pages; then
     git branch -D gh-pages
@@ -21,7 +25,7 @@ git rm -rf .
 # Checkout files from main
 git checkout main -- .
 
-# Install dependencies
+# Install dependencies again (needed after checking out files)
 echo "Installing dependencies..."
 npm install
 
@@ -47,5 +51,12 @@ git push -f origin gh-pages
 
 # Return to the original branch
 git checkout $CURRENT_BRANCH
+
+# Push main branch
+echo "Pushing main branch..."
+git push origin main
+
+echo "Installing dependencies..."
+npm install
 
 echo "Deployed successfully to GitHub Pages!"
