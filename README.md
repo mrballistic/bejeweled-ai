@@ -61,6 +61,29 @@ https://mrballistic.github.io/bejeweled-ai/
 
 ---
 
+## 🚀 Deployment
+
+### 📦 GitHub Pages
+To deploy the latest version to GitHub Pages:
+
+1. Ensure all changes are committed to the main branch
+2. Run the deployment script:
+   ```bash
+   ./deploy.sh
+   ```
+
+The script will:
+- Switch to the gh-pages branch
+- Build a production version
+- Clean up unnecessary files
+- Move the build to the root directory
+- Push to GitHub Pages
+- Return to your original branch
+
+The deployed site will be available at your GitHub Pages URL.
+
+---
+
 ## 🌟 Future Plans
 - **Gemini Integration**: Advanced match detection and AI enhancements.
 - **New Features**:
