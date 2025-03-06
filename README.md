@@ -14,26 +14,36 @@ https://mrballistic.github.io/bejeweled-ai/
 ## 🕹️ Features
 
 ### 🎮 Player Mode
-- Drag-and-drop or click-to-swap mechanics.
-- Score tracking and time-based gameplay.
-- Special gems and power-ups.
-- Level progression with increasing difficulty.
+- Drag-and-drop or click-to-swap mechanics with visual feedback
+- Score tracking and time-based gameplay
+- Animated match and cascade effects
+- Hint system for finding possible moves
+- Special gems and power-ups
+- Level progression with increasing difficulty
 
 ### 🤖 AI Mode
-- Automated gameplay with visual representation of AI decisions.
-- Adjustable speed controls.
-- Strategy display and performance metrics.
+- Automated gameplay with visual representation of AI decisions
+- Adjustable speed controls
+- Strategy display and performance metrics
 
 ---
 
 ## ✨ Recent Updates
 
+### 🎯 Match Detection & Visual Improvements
+- **Enhanced Match Detection**: Improved system that properly handles consecutive matches
+- **Visual Feedback**:
+  - Added blue glow effect for selected jewels
+  - Smooth animations for both valid and invalid moves
+  - Clear visual indication of match cascades
+- **Deployment Optimization**: Updated for better GitHub Pages compatibility with relative asset paths
+
 ### 🔍 Hint System
-- **New Functionality**: Added a `findHint` function to calculate potential moves on the game board.
-- **Integration**: The "Show Hint" button now displays hints for 3 seconds.
+- **New Functionality**: Added a `findHint` function to calculate potential moves on the game board
+- **Integration**: The "Show Hint" button now displays hints for 3 seconds
 - **Technical Enhancements**: 
-  - Utilized `React.forwardRef` and `useImperativeHandle` to expose the `board` state from the `GameBoard` component.
-  - Enabled the parent component to access the `board` state for hint calculations.
+  - Utilized `React.forwardRef` and `useImperativeHandle` to expose the `board` state from the `GameBoard` component
+  - Enabled the parent component to access the `board` state for hint calculations
 
 ---
 
@@ -57,7 +67,7 @@ https://mrballistic.github.io/bejeweled-ai/
    ```bash
    npm run dev
    ```
-4. Open the game in your browser at `http://localhost:3000`.
+4. Open the game in your browser at `http://localhost:3000`
 
 ---
 
@@ -73,8 +83,9 @@ To deploy the latest version to GitHub Pages:
    ```
 
 The script will:
-- Switch to the gh-pages branch
-- Build a production version
+- Create a fresh gh-pages branch
+- Install dependencies
+- Build a production version with relative paths
 - Clean up unnecessary files
 - Move the build to the root directory
 - Push to GitHub Pages
@@ -85,11 +96,14 @@ The deployed site will be available at your GitHub Pages URL.
 ---
 
 ## 🌟 Future Plans
-- **Gemini Integration**: Advanced match detection and AI enhancements.
+- **Gemini Integration**: Advanced match detection and AI enhancements
 - **New Features**:
-  - 🎮 Multiple AI difficulty levels.
-  - 🌐 Online multiplayer functionality.
-  - 🥇 Leaderboard and achievement systems.
+  - 🔄 Chain reaction bonuses for cascading matches
+  - 🌈 Special jewels for matching 4 or 5 in a row
+  - 🏆 Score multipliers and combo system
+  - 🎮 Multiple AI difficulty levels
+  - 🌐 Online multiplayer functionality
+  - 🥇 Leaderboard and achievement systems
 
 ---
 
