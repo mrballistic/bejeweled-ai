@@ -7,6 +7,8 @@ Bejeweled.ai is a web-based match-three puzzle game inspired by Bejeweled 2. It 
 
 Built with **React** and **Material-UI (MUI)**, the game uses emoji-based game pieces for simplicity and universal compatibility.
 
+https://mrballistic.github.io/bejeweled-ai/
+
 ---
 
 ## 🕹️ Features
@@ -74,4 +76,4 @@ Contributions are welcome! Please fork the repository and submit a pull request 
 ---
 
 ## 📜 License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
