@@ -11,15 +11,38 @@ const ScoreDisplay: React.FC = () => {
     <Paper
       elevation={3}
       sx={{
-        padding: '1rem',
-        marginBottom: '2rem',
+        padding: {
+          xs: '0.75rem',  // Less padding on mobile
+          sm: '1rem',     // Default padding for larger screens
+        },
+        marginBottom: {
+          xs: '1rem',     // Less margin on mobile
+          sm: '2rem',     // Default margin for larger screens
+        },
         backgroundColor: theme === 'dark' ? '#1e1e1e' : '#f5f5f5',
         border: `1px solid ${theme === 'dark' ? '#333' : '#ddd'}`,
-        minWidth: '200px',
-        height: '100px', // Fixed height
+        width: {
+          xs: '90%',      // Almost full width on mobile
+          sm: '200px',    // Fixed width on larger screens
+        },
+        minWidth: {
+          xs: 'auto',     // Allow shrinking on mobile
+          sm: '200px',    // Minimum width on larger screens
+        },
+        height: {
+          xs: '80px',     // Smaller height on mobile
+          sm: '100px',    // Default height for larger screens
+        },
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
+        borderRadius: {
+          xs: '12px',     // Larger border radius on mobile
+          sm: '4px',      // Default border radius for larger screens
+        },
+        boxShadow: theme === 'dark'
+          ? '0 4px 8px rgba(0,0,0,0.3)'
+          : '0 4px 8px rgba(0,0,0,0.1)',
       }}
     >
       <Box sx={{ textAlign: 'center', position: 'relative' }}>
@@ -28,17 +51,32 @@ const ScoreDisplay: React.FC = () => {
           component="div"
           sx={{
             fontWeight: 'bold',
+            fontSize: {
+              xs: '2rem',    // Smaller font on mobile
+              sm: '2.5rem',  // Default font size for larger screens
+            },
             background: theme === 'dark'
               ? 'linear-gradient(45deg, #90caf9 30%, #64b5f6 90%)'
               : 'linear-gradient(45deg, #1976d2 30%, #2196f3 90%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-            marginBottom: '0.5rem',
+            marginBottom: {
+              xs: '0.25rem', // Less margin on mobile
+              sm: '0.5rem',  // Default margin for larger screens
+            },
+            letterSpacing: '0.05em', // Improved readability
           }}
         >
           {score.toLocaleString()}
         </Typography>
-        <Box sx={{ height: '24px' }}> {/* Fixed height container for combo text */}
+        <Box 
+          sx={{ 
+            height: {
+              xs: '20px',  // Smaller height on mobile
+              sm: '24px',  // Default height for larger screens
+            }
+          }}
+        >
           {combo > 0 && (
             <Typography
               variant="subtitle1"
@@ -48,6 +86,22 @@ const ScoreDisplay: React.FC = () => {
                 position: 'absolute',
                 width: '100%',
                 left: 0,
+                fontSize: {
+                  xs: '0.9rem',  // Smaller font on mobile
+                  sm: '1rem',    // Default font size for larger screens
+                },
+                animation: 'pulseCombo 1s infinite',
+                '@keyframes pulseCombo': {
+                  '0%': {
+                    transform: 'scale(1)',
+                  },
+                  '50%': {
+                    transform: 'scale(1.1)',
+                  },
+                  '100%': {
+                    transform: 'scale(1)',
+                  },
+                },
               }}
             >
               Combo x{combo + 1}

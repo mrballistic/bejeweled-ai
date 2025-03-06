@@ -19,9 +19,18 @@ interface JewelProps {
   onDragSwap?: (from: Position, to: Position) => void;
   isHint?: boolean;
   isSelected?: boolean;
+  size?: number;
 }
 
-const Jewel: React.FC<JewelProps> = ({ type, position, onSelect, onDragSwap, isHint, isSelected }) => {
+const Jewel: React.FC<JewelProps> = ({ 
+  type, 
+  position, 
+  onSelect, 
+  onDragSwap, 
+  isHint, 
+  isSelected,
+  size = 50 // Default size if not provided
+}) => {
   const { theme } = useTheme();
 
   const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
@@ -60,6 +69,9 @@ const Jewel: React.FC<JewelProps> = ({ type, position, onSelect, onDragSwap, isH
     }),
   }), [position, onDragSwap]);
 
+  // Calculate font size based on jewel size
+  const fontSize = Math.max(Math.floor(size * 0.6), 20); // Min font size of 20px
+
   return (
     <div
       ref={(node) => {
@@ -67,16 +79,16 @@ const Jewel: React.FC<JewelProps> = ({ type, position, onSelect, onDragSwap, isH
       }}
       data-position={`${position.x}-${position.y}`}
       style={{
-        width: 50,
-        height: 50,
+        width: size,
+        height: size,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         border: isSelected 
-          ? `2px solid ${theme === 'dark' ? '#64b5f6' : '#2196f3'}`
-          : `1px solid ${theme === 'dark' ? '#444' : '#ccc'}`,
-        borderRadius: '4px',
-        fontSize: '2rem',
+          ? `${Math.max(2, size * 0.04)}px solid ${theme === 'dark' ? '#64b5f6' : '#2196f3'}`
+          : `${Math.max(1, size * 0.02)}px solid ${theme === 'dark' ? '#444' : '#ccc'}`,
+        borderRadius: Math.max(4, size * 0.08),
+        fontSize: `${fontSize}px`,
         cursor: 'move',
         opacity: isDragging ? 0.5 : 1,
         backgroundColor: isHint
@@ -90,8 +102,9 @@ const Jewel: React.FC<JewelProps> = ({ type, position, onSelect, onDragSwap, isH
         WebkitUserSelect: 'none',
         touchAction: 'none',
         boxShadow: isSelected 
-          ? `0 0 8px ${theme === 'dark' ? '#64b5f6' : '#2196f3'}`
+          ? `0 0 ${Math.max(8, size * 0.16)}px ${theme === 'dark' ? '#64b5f6' : '#2196f3'}`
           : 'none',
+        WebkitTapHighlightColor: 'transparent', // Remove tap highlight on mobile
       }}
       onClick={() => onSelect(position)}
     >
