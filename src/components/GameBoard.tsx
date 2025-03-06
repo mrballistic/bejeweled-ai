@@ -4,7 +4,7 @@ import Jewel from './Jewel.tsx';
 import useJewelSwap from '../hooks/useJewelSwap';
 import { findMatches } from '../utils/matchDetection';
 import { handleCascade } from '../utils/cascadeHandler';
-import { animateMatch, animateCascade } from '../utils/animations';
+import { animateMatch, animateCascade, animateSwap } from '../utils/animations';
 import { useTheme } from '../context/ThemeProvider';
 import { useScore, POINTS } from '../context/ScoreContext';
 
@@ -159,8 +159,17 @@ const GameBoard = forwardRef<NullableJewelType[][], GameBoardProps>((
     }
   };
 
-  const handleSwap = (from: Position, to: Position) => {
+  const handleSwap = async (from: Position, to: Position) => {
     console.log('Attempting swap between:', from, 'and', to);
+
+    // Get the elements to animate
+    const fromElement = document.querySelector(`[data-position="${from.x}-${from.y}"]`) as HTMLElement;
+    const toElement = document.querySelector(`[data-position="${to.x}-${to.y}"]`) as HTMLElement;
+    
+    if (!fromElement || !toElement) {
+      console.error('Could not find elements to animate');
+      return;
+    }
 
     const newBoard = board.map((row: NullableJewelType[]) => 
       row.map((jewel: NullableJewelType) => (jewel ? { ...jewel } : null))
@@ -177,12 +186,27 @@ const GameBoard = forwardRef<NullableJewelType[][], GameBoardProps>((
     const matches = findMatches(newBoard);
     console.log('Matches found after swap:', matches);
 
-    if (matches.length > 0) {
-      console.log('Valid move. Updating board state.');
+    try {
+      // Animate the swap
+      await animateSwap(fromElement, toElement);
+
+      if (matches.length > 0) {
+        console.log('Valid move. Updating board state.');
+        setBoard(newBoard);
+        handleMatches(matches, newBoard);
+      } else {
+        console.log('Invalid move. Reverting swap.');
+        // Animate the revert
+        await animateSwap(fromElement, toElement);
+        // Revert the swap in the board state
+        const temp = newBoard[from.y][from.x];
+        newBoard[from.y][from.x] = newBoard[to.y][to.x];
+        newBoard[to.y][to.x] = temp;
+        setBoard(newBoard);
+      }
+    } catch (error) {
+      console.error('Error during swap animation:', error);
       setBoard(newBoard);
-      handleMatches(matches, newBoard);
-    } else {
-      console.log('Invalid move. Reverting swap.');
     }
   };
 
@@ -284,7 +308,7 @@ const GameBoard = forwardRef<NullableJewelType[][], GameBoardProps>((
     await processMatchesAndCascade(newBoard);
   };
 
-  const { handleJewelSelect, handleDragSwap } = useJewelSwap(handleSwap);
+  const { handleJewelSelect, handleDragSwap, selectedJewel } = useJewelSwap(handleSwap);
 
   return (
     <div 
@@ -306,6 +330,7 @@ const GameBoard = forwardRef<NullableJewelType[][], GameBoardProps>((
             onSelect={handleJewelSelect}
             onDragSwap={handleDragSwap}
             isHint={hint?.x === jewel.position.x && hint?.y === jewel.position.y}
+            isSelected={selectedJewel?.x === jewel.position.x && selectedJewel?.y === jewel.position.y}
           />
         ) : (
           <div

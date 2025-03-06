@@ -5,10 +5,16 @@ export interface Position {
   y: number;
 }
 
-const useJewelSwap = (onSwap: (from: Position, to: Position) => void) => {
+const useJewelSwap = (onSwap: (from: Position, to: Position) => Promise<void>) => {
   const [selectedJewel, setSelectedJewel] = useState<Position | null>(null);
+  const [isSwapping, setIsSwapping] = useState(false);
 
-  const handleJewelSelect = useCallback((position: Position) => {
+  const handleJewelSelect = useCallback(async (position: Position) => {
+    if (isSwapping) {
+      console.log('Swap in progress, ignoring selection');
+      return;
+    }
+
     console.log('Jewel selected:', position);
     if (!selectedJewel) {
       // First jewel selected
@@ -21,7 +27,12 @@ const useJewelSwap = (onSwap: (from: Position, to: Position) => void) => {
     console.log('Second jewel selected:', position);
     if (isAdjacent(selectedJewel, position)) {
       console.log('Jewels are adjacent. Attempting swap...');
-      onSwap(selectedJewel, position);
+      setIsSwapping(true);
+      try {
+        await onSwap(selectedJewel, position);
+      } finally {
+        setIsSwapping(false);
+      }
     } else {
       console.log('Jewels are not adjacent. Resetting selection.');
     }
@@ -37,12 +48,22 @@ const useJewelSwap = (onSwap: (from: Position, to: Position) => void) => {
   };
 
   // Direct swap function for drag and drop
-  const handleDragSwap = useCallback((from: Position, to: Position) => {
+  const handleDragSwap = useCallback(async (from: Position, to: Position) => {
+    if (isSwapping) {
+      console.log('Swap in progress, ignoring drag');
+      return;
+    }
+
     console.log('Drag started from:', from);
     console.log('Drag ended at:', to);
     if (isAdjacent(from, to)) {
       console.log('Jewels are adjacent. Attempting swap...');
-      onSwap(from, to);
+      setIsSwapping(true);
+      try {
+        await onSwap(from, to);
+      } finally {
+        setIsSwapping(false);
+      }
     } else {
       console.log('Jewels are not adjacent. Swap aborted.');
     }

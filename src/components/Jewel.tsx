@@ -18,9 +18,10 @@ interface JewelProps {
   onSelect: (position: Position) => void;
   onDragSwap?: (from: Position, to: Position) => void;
   isHint?: boolean;
+  isSelected?: boolean;
 }
 
-const Jewel: React.FC<JewelProps> = ({ type, position, onSelect, onDragSwap, isHint }) => {
+const Jewel: React.FC<JewelProps> = ({ type, position, onSelect, onDragSwap, isHint, isSelected }) => {
   const { theme } = useTheme();
 
   const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
@@ -71,7 +72,9 @@ const Jewel: React.FC<JewelProps> = ({ type, position, onSelect, onDragSwap, isH
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        border: `1px solid ${theme === 'dark' ? '#444' : '#ccc'}`,
+        border: isSelected 
+          ? `2px solid ${theme === 'dark' ? '#64b5f6' : '#2196f3'}`
+          : `1px solid ${theme === 'dark' ? '#444' : '#ccc'}`,
         borderRadius: '4px',
         fontSize: '2rem',
         cursor: 'move',
@@ -81,11 +84,14 @@ const Jewel: React.FC<JewelProps> = ({ type, position, onSelect, onDragSwap, isH
           : isOver 
             ? (theme === 'dark' ? '#444' : '#e3f2fd')
             : (theme === 'dark' ? '#222' : '#fff'),
-        transform: isOver ? 'scale(1.1)' : 'scale(1)',
-        transition: 'transform 0.2s, background-color 0.2s',
+        transform: isSelected || isOver ? 'scale(1.1)' : 'scale(1)',
+        transition: 'transform 0.2s, background-color 0.2s, border 0.2s',
         userSelect: 'none',
         WebkitUserSelect: 'none',
         touchAction: 'none',
+        boxShadow: isSelected 
+          ? `0 0 8px ${theme === 'dark' ? '#64b5f6' : '#2196f3'}`
+          : 'none',
       }}
       onClick={() => onSelect(position)}
     >
