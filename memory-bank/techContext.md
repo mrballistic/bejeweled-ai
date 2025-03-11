@@ -72,16 +72,47 @@ export default defineConfig({
 
 ---
 
+## 📁 Project Structure
+```
+src/
+├── components/          # React components
+│   ├── BoardGrid.tsx   # Pure board rendering
+│   ├── GameBoard.tsx   # Game orchestration
+│   ├── Jewel.tsx      # Individual jewel
+│   └── ScoreDisplay.tsx # Score visualization
+├── context/            # React contexts
+│   ├── ScoreContext.tsx # Score and multipliers
+│   └── ThemeProvider.tsx # Theme management
+├── hooks/              # Custom React hooks
+│   ├── useGameLogic.ts # Core game mechanics
+│   ├── useJewelSwap.ts # Jewel movement
+│   └── useScore.ts    # Score management
+├── types/              # TypeScript types
+│   └── game.ts        # Game-related types
+├── utils/             # Utility functions
+│   ├── animations.ts  # GSAP animations
+│   ├── boardInitializer.ts # Board setup
+│   ├── cascadeHandler.ts # Cascade logic
+│   ├── hintFinder.ts # Move suggestions
+│   ├── matchDetection.ts # Match logic
+│   └── sizeCalculator.ts # Responsive sizing
+└── main.tsx          # App entry point
+```
+
+---
+
 ## ⚙️ Technical Constraints
 1. 🌐 Browser Compatibility:
    - Modern browsers with ES6+ support
    - Touch device support for mobile interactions
    - Progressive Web App capabilities
+
 2. ⚡ Performance:
    - Smooth animations at 60fps
    - Efficient match detection for large cascades
    - Touch event optimization
    - Mobile battery consideration
+
 3. 🎨 Design:
    - Responsive layout for all screen sizes
    - Dark/light theme support

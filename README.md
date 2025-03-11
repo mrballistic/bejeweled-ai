@@ -16,7 +16,7 @@ https://mrballistic.github.io/bejeweled-ai/
 ### 🎮 Player Mode
 - Drag-and-drop or click-to-swap mechanics with visual feedback
 - Touch support for mobile devices
-- Score tracking and time-based gameplay
+- Score tracking with combo and chain reaction multipliers
 - Animated match and cascade effects
 - Hint system for finding possible moves
 - Special gems and power-ups
@@ -30,6 +30,27 @@ https://mrballistic.github.io/bejeweled-ai/
 ---
 
 ## ✨ Recent Updates
+
+### 🔄 Chain Reaction System
+- **Score Multipliers**: 
+  - Chain reactions double points with each cascade level
+  - Combo system for consecutive matches
+  - Visual feedback for both multipliers
+- **Enhanced Scoring**:
+  - Base points: Match-3 (50), Match-4 (100), Match-5 (200)
+  - Combo multiplier: 1.5x per consecutive match
+  - Chain multiplier: 2x per cascade level (up to 32x)
+
+### 🏗️ Code Refactoring
+- **Modular Architecture**:
+  - Separated game types and constants
+  - Extracted core game logic into hooks
+  - Split UI components for better maintainability
+- **New Components**:
+  - BoardGrid for pure rendering
+  - Utility functions for board management
+  - Size calculator for responsive design
+- **Enhanced Testing**: More modular code enables better unit testing
 
 ### 📱 Mobile Support & Touch Interactions
 - **Multi-Backend Support**: 
@@ -55,13 +76,6 @@ https://mrballistic.github.io/bejeweled-ai/
   - GitHub Pages optimization
   - Main branch synchronization
   - Asset path handling for reliable deployment
-
-### 🔍 Hint System
-- **New Functionality**: Added a `findHint` function to calculate potential moves
-- **Integration**: The "Show Hint" button displays hints for 3 seconds
-- **Technical Enhancements**: 
-  - Utilized `React.forwardRef` and `useImperativeHandle` for board state access
-  - Mobile-friendly hint display
 
 ---
 
@@ -115,9 +129,7 @@ The deployed site will be available at your GitHub Pages URL.
 ## 🌟 Future Plans
 - **Gemini Integration**: Advanced match detection and AI enhancements
 - **New Features**:
-  - 🔄 Chain reaction bonuses for cascading matches
   - 🌈 Special jewels for matching 4 or 5 in a row
-  - 🏆 Score multipliers and combo system
   - 📱 Mobile-specific features:
     - Haptic feedback for matches
     - Gesture controls for hints

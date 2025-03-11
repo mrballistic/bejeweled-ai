@@ -1,10 +1,11 @@
 # System Patterns: Bejeweled Clone with AI Mode
 
 ## 🏗️ System Architecture
-The system is divided into three main components:
+The system is divided into four main components:
 1. **🖥️ Frontend**: React and Material-UI for responsive UI
 2. **🎮 Game Engine**: Core game mechanics and state management
 3. **📱 Mobile Layer**: Touch interactions and responsive design
+4. **🎯 Score System**: Chain reactions and combo tracking
 
 ---
 
@@ -16,22 +17,26 @@ The system is divided into three main components:
 5. **✨ Animation System**: GSAP for smooth, performant animations
 6. **📱 Mobile Support**: Multi-backend drag-and-drop for touch/mouse
 7. **🚀 Deployment**: Automated GitHub Pages with relative paths
+8. **🏗️ Code Organization**: Modular architecture with clear separation of concerns
 
 ---
 
 ## 🧩 Design Patterns
 
 ### 🧱 Component Architecture
-1. **Component-Based Design**:
-   - `GameBoard`: Responsive grid with dynamic sizing
+1. **Core Components**:
+   - `GameBoard`: Game state orchestrator
+   - `BoardGrid`: Pure rendering component
    - `Jewel`: Touch and mouse interaction handling
-   - `CustomDragLayer`: Enhanced drag preview with touch feedback
-   - `ScoreDisplay`: Responsive score and combo tracking
+   - `CustomDragLayer`: Enhanced drag preview
+   - `ScoreDisplay`: Score and multiplier visualization
 
 2. **⚙️ Custom Hooks**:
-   - `useJewelSwap`: Manages jewel swapping with touch support
-   - `useScore`: Handles scoring and combo system
-   - `useTheme`: Controls dark/light theme switching
+   - `useGameLogic`: Core game mechanics
+   - `useJewelSwap`: Jewel movement handling
+   - `useScore`: Scoring and multiplier system
+   - `useTheme`: Theme management
+   - `useViewportCalculator`: Responsive sizing
 
 3. **🔄 State Management**:
    - Context providers for global state
@@ -42,11 +47,17 @@ The system is divided into three main components:
 
 1. **🎯 Match Detection System**:
    - Center-first scanning for matches
-   - Bidirectional checking for consecutive matches
+   - Bidirectional checking
    - Length-based match scoring
-   - Cascade effect handling
+   - Cascade effect tracking
 
-2. **✨ Animation Patterns**:
+2. **🔄 Chain Reaction System**:
+   - Cascade level tracking
+   - Progressive multipliers
+   - Combo system integration
+   - Visual feedback for chains
+
+3. **✨ Animation Patterns**:
    - Sequential animation flow:
      1. Swap/touch animation
      2. Match highlight
@@ -56,18 +67,12 @@ The system is divided into three main components:
    - Selected jewel highlighting
    - Mobile-optimized transitions
 
-3. **📱 Mobile Interaction Patterns**:
-   - Touch-to-select with visual feedback
+4. **📱 Mobile Interaction Patterns**:
+   - Touch-to-select with feedback
    - Drag-to-swap with preview
-   - Multi-backend support for input methods
-   - Responsive sizing and layout
+   - Multi-backend support
+   - Responsive sizing
    - Touch event optimization
-
-4. **🔄 Game Flow Control**:
-   - Async/await for animations
-   - State locking during interactions
-   - Combo tracking for cascades
-   - Touch event debouncing
 
 ### 🚀 Deployment Patterns
 
@@ -88,33 +93,33 @@ The system is divided into three main components:
 
 ## 🔗 Component Relationships
 
-### 🎲 Core Components
+### 🎲 Core Game Flow
 1. **GameBoard**:
-   - Manages responsive grid layout
-   - Handles touch and mouse events
-   - Coordinates with animation system
-   - Manages match detection and cascades
+   - Orchestrates game state
+   - Manages board initialization
+   - Coordinates with game logic
+   - Handles window resizing
 
-2. **💎 Jewel**:
-   - Handles multi-input interactions
-   - Manages visual feedback states
-   - Provides touch-specific animations
-   - Communicates with GameBoard
+2. **BoardGrid**:
+   - Pure rendering component
+   - Manages layout and styling
+   - Handles jewel positioning
+   - Provides touch interaction surface
 
-3. **📊 Score System**:
-   - Tracks points and combos
-   - Provides global score context
-   - Handles multipliers and bonuses
-   - Responsive display layout
+3. **Game Logic**:
+   - Processes matches and cascades
+   - Manages chain reactions
+   - Updates score and multipliers
+   - Coordinates animations
 
-4. **✨ Animation System**:
-   - Coordinates animation sequences
-   - Manages touch feedback
-   - Handles transition timing
-   - Provides mobile-optimized effects
+4. **Score System**:
+   - Tracks base points
+   - Manages combo multipliers
+   - Handles chain reaction bonuses
+   - Updates visual feedback
 
-5. **🎨 Theme System**:
-   - Controls dark/light mode
-   - Manages consistent styling
-   - Handles visual transitions
-   - Supports mobile themes
+5. **Utilities**:
+   - Board initialization
+   - Size calculations
+   - Match detection
+   - Hint generation

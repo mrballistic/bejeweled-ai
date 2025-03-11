@@ -1,36 +1,55 @@
 # Active Context
 
 ## 🎯 Current Focus
-The current focus is on mobile optimization and deployment improvements:
-- 📱 Mobile-responsive design and touch interactions
-- 🔄 Multi-backend drag-and-drop support
-- 🚀 Streamlined deployment process
+The current focus is on code organization and gameplay enhancements:
+- 🏗️ Modular architecture and code maintainability
+- 🔄 Chain reaction scoring system
+- 🎮 Gameplay mechanics refinement
+- 📱 Mobile experience optimization
 
 ## 🔄 Recent Changes
-- ✅ Added mobile support:
-  - Implemented responsive design for all components
-  - Added touch interaction support with visual feedback
-  - Optimized UI elements for mobile screens
-- ✅ Improved deployment process:
-  - Updated deploy script with automatic dependency installation
-  - Added automatic main branch synchronization
-  - Streamlined GitHub Pages deployment
+- ✅ Major code refactoring:
+  - Separated game types and constants
+  - Created modular component architecture
+  - Implemented custom hooks for game logic
+  - Split UI components for better maintainability
+  - Added utility functions for common operations
+
+- ✅ Chain reaction system:
+  - Added cascade level tracking
+  - Implemented progressive multipliers
+  - Created visual feedback for chains
+  - Integrated with combo system
+  - Added score display enhancements
+
 - ✅ Previous improvements:
   - Fixed match detection for consecutive matches
   - Added visual feedback and animations
   - Integrated hint system
+  - Implemented mobile support
 
 ## 🚀 Next Steps
-- 🌟 Explore the integration of Gemini for advanced match detection and AI enhancements
-- 🎮 Consider implementing:
-  - 🔄 Chain reaction bonuses for cascading matches
-  - 🌈 Special jewels for matching 4 or 5 in a row
-  - 🏆 Score multipliers and combo system
-  - 📱 Mobile-specific features:
-    - Haptic feedback for matches
-    - Gesture controls for hints
-    - Portrait/landscape optimization
+- 🌈 Special Jewels Implementation:
+  - Design special jewel types and effects
+  - Implement creation logic for 4/5 matches
+  - Add special jewel animations
+  - Create interaction mechanics
+  - Update scoring system for special jewels
+
+- 🎮 Gameplay Enhancements:
+  - Add haptic feedback for mobile
+  - Implement gesture controls
+  - Optimize portrait/landscape modes
+  - Add sound effects for chains
+
 - 🎯 Long-term goals:
+  - 🌟 Gemini integration for AI
   - 🎮 Multiple AI difficulty levels
   - 🌐 Online multiplayer
-  - 🥇 Leaderboard and achievement systems
+  - 🥇 Leaderboard system
+
+## 🔍 Current Considerations
+- Keep monitoring performance with chain reactions
+- Consider adding visual tutorials for new mechanics
+- Plan for special jewel balancing
+- Think about AI integration points in new architecture
