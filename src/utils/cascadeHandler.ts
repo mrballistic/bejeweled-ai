@@ -4,6 +4,8 @@ interface Jewel {
   id: string;
   type: string;
   position: Position;
+  isMoving?: boolean;
+  isNew?: boolean;
 }
 
 type NullableJewel = Jewel | null;
@@ -30,54 +32,46 @@ export const handleCascade = (
   const newBoard = [...board.map(row => [...row])];
   let hasChanges = false;
 
-  // Drop existing jewels
+  // Process each column
   for (let x = 0; x < BOARD_SIZE; x++) {
-    let bottomY = BOARD_SIZE - 1;
-    
-    // Start from the bottom and move jewels down
-    while (bottomY >= 0) {
-      if (newBoard[bottomY][x] === null) {
-        console.log(`Found empty space at (${x}, ${bottomY})`);
-        // Find the next non-null jewel above
-        let topY = bottomY - 1;
-        while (topY >= 0 && newBoard[topY][x] === null) {
-          topY--;
-        }
-
-        // If we found a jewel, move it down
-        if (topY >= 0) {
-          console.log(`Moving jewel from (${x}, ${topY}) to (${x}, ${bottomY})`);
-          const movedJewel = {
-            ...newBoard[topY][x]!,
-            id: `jewel-${x}-${bottomY}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-            position: { x, y: bottomY },
-          };
-          newBoard[bottomY][x] = movedJewel;
-          newBoard[topY][x] = null;
-          hasChanges = true;
-          console.log(`Moved jewel:`, movedJewel);
-        }
+    // First, collect all non-null jewels in the column from bottom to top
+    const columnJewels: Jewel[] = [];
+    for (let y = BOARD_SIZE - 1; y >= 0; y--) {
+      if (newBoard[y][x]) {
+        columnJewels.push({
+          ...newBoard[y][x]!,
+          isMoving: false,
+          isNew: false
+        });
+        newBoard[y][x] = null;
       }
-      bottomY--;
     }
-  }
 
-  console.log('Board after dropping jewels:', JSON.stringify(newBoard));
-
-  // Fill empty spaces with new jewels
-  for (let x = 0; x < BOARD_SIZE; x++) {
-    for (let y = 0; y < BOARD_SIZE; y++) {
-      if (!newBoard[y][x]) {
-        console.log(`Filling empty space at (${x}, ${y})`);
-        const newJewel = {
-          id: `jewel-${x}-${y}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          type: getRandomJewelType(),
-          position: { x, y },
-        } as Jewel;
-        newBoard[y][x] = newJewel;
-        hasChanges = true;
-        console.log(`Created new jewel:`, newJewel);
+    // Place existing jewels from bottom up
+    let bottomY = BOARD_SIZE - 1;
+    columnJewels.forEach(jewel => {
+      if (bottomY >= 0) {
+        if (bottomY !== jewel.position.y) {
+          jewel.isMoving = true;
+        }
+        jewel.position = { x, y: bottomY };
+        newBoard[bottomY][x] = jewel;
+        bottomY--;
       }
+    });
+
+    // Fill remaining spaces with new jewels from bottom up
+    while (bottomY >= 0) {
+      const newJewel = {
+        id: `jewel-${x}-${bottomY}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        type: getRandomJewelType(),
+        position: { x, y: bottomY },
+        isMoving: true,
+        isNew: true,
+      } as Jewel;
+      newBoard[bottomY][x] = newJewel;
+      hasChanges = true;
+      bottomY--;
     }
   }
 

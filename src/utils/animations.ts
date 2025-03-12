@@ -41,7 +41,8 @@ export const animateMatch = (elements: HTMLElement[]): Promise<void> => {
       },
       onComplete: () => {
         gsap.set(elements, { clearProps: 'scale,opacity' });
-        resolve();
+        // Add delay before resolving
+        gsap.delayedCall(0.5, resolve);
       },
     });
   });
@@ -49,58 +50,78 @@ export const animateMatch = (elements: HTMLElement[]): Promise<void> => {
 
 export const animateCascade = (elements: HTMLElement[]): Promise<void> => {
   return new Promise((resolve) => {
-    const startPositions = elements.map(el => {
-      const rect = el.getBoundingClientRect();
-      return {
-        element: el,
-        startTop: rect.top,
-      };
-    });
-
-    // First pass: get final positions
-    gsap.set(elements, { clearProps: 'transform' });
-
-    // Second pass: calculate and apply animations
-    const animations = startPositions.map(({ element, startTop }) => {
-      const endRect = element.getBoundingClientRect();
-      const deltaY = endRect.top - startTop;
-
-      return {
-        element,
-        deltaY,
-      };
-    });
-
-    // Find the maximum fall distance to scale the duration
-    const maxDeltaY = Math.max(...animations.map(a => Math.abs(a.deltaY)));
-    const baseDuration = 0.5; // Base duration for short falls
-    const maxDuration = 1.2; // Maximum duration for long falls
-    
-    // Scale duration based on fall distance, with a minimum of baseDuration
-    const duration = Math.min(
-      maxDuration,
-      baseDuration + (maxDeltaY / 400) // Adjust the divisor to tune the scaling
-    );
-
-    // Apply animations
-    gsap.fromTo(
-      elements,
-      {
-        y: (i) => -animations[i].deltaY,
-      },
-      {
-        y: 0,
-        duration,
-        ease: 'bounce.out',
-        stagger: {
-          amount: 0.4, // Increased stagger amount
-          from: 'start',
-        },
-        onComplete: () => {
-          gsap.set(elements, { clearProps: 'y' });
-          resolve();
-        },
+    // Group elements by column
+    const columns = new Map<number, HTMLElement[]>();
+    elements.forEach(element => {
+      const position = element.getAttribute('data-position');
+      if (position) {
+        const [x] = position.split('-').map(Number);
+        if (!columns.has(x)) {
+          columns.set(x, []);
+        }
+        columns.get(x)?.push(element);
       }
+    });
+
+    // Create timeline for coordinated animation
+    const timeline = gsap.timeline({
+      onComplete: () => {
+        gsap.set(elements, { clearProps: 'y' });
+        resolve();
+      }
+    });
+
+    // First phase: Move all existing jewels down together
+    const existingJewels = elements.filter(el => 
+      el.getAttribute('data-moving') === 'true' && 
+      !el.hasAttribute('data-new')
     );
+
+    if (existingJewels.length > 0) {
+      timeline.to(existingJewels, {
+        y: 0,
+        duration: 0.4,
+        ease: 'power1.in',
+      });
+    }
+
+    // Second phase: Fill empty spaces from bottom up
+    timeline.addLabel('newJewels', '>');
+
+    columns.forEach((columnElements) => {
+      // Sort new jewels by final y position (bottom to top)
+      const newJewels = columnElements
+        .filter(el => el.hasAttribute('data-new'))
+        .sort((a, b) => {
+          const [, aY] = a.getAttribute('data-position')?.split('-').map(Number) || [0, 0];
+          const [, bY] = b.getAttribute('data-position')?.split('-').map(Number) || [0, 0];
+          return bY - aY; // Sort bottom to top
+        });
+
+      // Get the jewel size from the first element
+      const jewelRect = columnElements[0]?.getBoundingClientRect();
+      const jewelSize = jewelRect ? jewelRect.height : 50;
+
+      // Set initial positions for new jewels
+      newJewels.forEach(jewel => {
+        gsap.set(jewel, {
+          y: -jewelSize,
+          opacity: 0,
+        });
+      });
+
+      // Animate new jewels one at a time, bottom to top
+      newJewels.forEach((jewel, i) => {
+        timeline.to(jewel,
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.3,
+            ease: 'power1.in',
+          },
+          `newJewels+=${i * 0.15}` // Stagger new jewels with a delay
+        );
+      });
+    });
   });
 };

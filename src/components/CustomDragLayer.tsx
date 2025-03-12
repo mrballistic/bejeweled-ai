@@ -1,40 +1,44 @@
 import React from 'react';
-import { useDragLayer } from 'react-dnd/dist/hooks';
+import { useDragLayer } from 'react-dnd';
 import { useTheme } from '../context/ThemeProvider';
-
-interface DragItem {
-  type: string;
-  fromPosition: { x: number; y: number };
-  size?: number;
-}
+import { ItemTypes } from './Jewel';
 
 const CustomDragLayer: React.FC = () => {
   const { theme } = useTheme();
-  const { isDragging, currentOffset, item, initialOffset } = useDragLayer((monitor) => ({
-    item: monitor.getItem() as DragItem,
-    currentOffset: monitor.getClientOffset(),
-    initialOffset: monitor.getInitialClientOffset(),
+  const {
+    itemType,
+    isDragging,
+    item,
+    initialOffset,
+    currentOffset,
+  } = useDragLayer((monitor) => ({
+    item: monitor.getItem(),
+    itemType: monitor.getItemType(),
+    initialOffset: monitor.getInitialSourceClientOffset(),
+    currentOffset: monitor.getSourceClientOffset(),
     isDragging: monitor.isDragging(),
   }));
 
-  if (!isDragging || !currentOffset) {
+  if (!isDragging || !initialOffset || !currentOffset) {
     return null;
   }
 
-  // Calculate the distance moved from initial position
-  const distance = initialOffset ? Math.sqrt(
-    Math.pow(currentOffset.x - initialOffset.x, 2) +
-    Math.pow(currentOffset.y - initialOffset.y, 2)
-  ) : 0;
+  if (itemType !== ItemTypes.JEWEL) {
+    return null;
+  }
 
-  // Calculate scale based on movement (more movement = slightly smaller)
-  const scale = Math.max(0.8, 1 - distance / 500);
+  // Calculate transform with smooth follow
+  const deltaX = currentOffset.x - initialOffset.x;
+  const deltaY = currentOffset.y - initialOffset.y;
+  const transform = `translate(${deltaX}px, ${deltaY}px)`;
 
-  // Get the jewel size from the item or use default
-  const jewelSize = item.size || 50;
+  // Calculate scale based on movement speed
+  const speed = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+  const scale = Math.min(1.2, 1 + speed * 0.001); // Max scale of 1.2x
 
-  // Calculate font size based on jewel size
-  const fontSize = Math.max(Math.floor(jewelSize * 0.6), 20);
+  // Calculate rotation based on movement direction
+  const rotation = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+  const tilt = Math.min(15, speed * 0.1); // Max tilt of 15 degrees
 
   return (
     <div
@@ -42,59 +46,58 @@ const CustomDragLayer: React.FC = () => {
         position: 'fixed',
         pointerEvents: 'none',
         zIndex: 100,
-        left: 0,
-        top: 0,
-        width: '100%',
-        height: '100%',
+        left: initialOffset.x,
+        top: initialOffset.y,
       }}
     >
       <div
         style={{
-          position: 'absolute',
-          width: jewelSize,
-          height: jewelSize,
-          left: currentOffset.x,
-          top: currentOffset.y,
-          transform: `translate(-50%, -50%) scale(${scale})`,
+          transform: `${transform} scale(${scale}) rotate(${tilt}deg)`,
+          fontSize: '2rem',
+          width: '50px',
+          height: '50px',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          fontSize: `${fontSize}px`,
-          backgroundColor: theme === 'dark' ? 'rgba(34, 34, 34, 0.8)' : 'rgba(255, 255, 255, 0.8)',
-          border: `${Math.max(2, jewelSize * 0.04)}px solid ${theme === 'dark' ? '#64b5f6' : '#2196f3'}`,
-          borderRadius: Math.max(4, jewelSize * 0.08),
-          boxShadow: `0 ${Math.max(4, jewelSize * 0.08)}px ${Math.max(8, jewelSize * 0.16)}px rgba(0,0,0,0.3)`,
-          transition: 'transform 0.1s ease-out',
-          WebkitBackdropFilter: 'blur(2px)',
-          backdropFilter: 'blur(2px)',
+          backgroundColor: theme === 'dark' ? '#333' : '#fff',
+          border: `2px solid ${theme === 'dark' ? '#64b5f6' : '#2196f3'}`,
+          borderRadius: '8px',
+          boxShadow: `0 4px 8px rgba(0,0,0,${theme === 'dark' ? '0.5' : '0.2'})`,
+          transition: 'transform 0.05s ease-out',
+          willChange: 'transform',
+          opacity: 0.9,
+          WebkitBackfaceVisibility: 'hidden',
+          WebkitTransformStyle: 'preserve-3d',
         }}
       >
         {item.type}
       </div>
-      {/* Touch indicator */}
+      {/* Touch ripple effect */}
       <div
         style={{
           position: 'absolute',
-          width: Math.max(20, jewelSize * 0.4),
-          height: Math.max(20, jewelSize * 0.4),
-          left: currentOffset.x,
-          top: currentOffset.y,
-          transform: 'translate(-50%, -50%)',
-          borderRadius: '50%',
+          left: '50%',
+          top: '50%',
+          width: '60px',
+          height: '60px',
+          marginLeft: '-30px',
+          marginTop: '-30px',
           border: `2px solid ${theme === 'dark' ? '#64b5f6' : '#2196f3'}`,
-          opacity: 0.5,
-          animation: 'ripple 1s infinite ease-out',
+          borderRadius: '50%',
+          animation: 'ripple 1s ease-out infinite',
+          opacity: 0.3,
+          pointerEvents: 'none',
         }}
       />
       <style>
         {`
           @keyframes ripple {
             0% {
-              transform: translate(-50%, -50%) scale(1);
-              opacity: 0.5;
+              transform: scale(0.8);
+              opacity: 0.3;
             }
             100% {
-              transform: translate(-50%, -50%) scale(2);
+              transform: scale(2);
               opacity: 0;
             }
           }
@@ -104,4 +107,4 @@ const CustomDragLayer: React.FC = () => {
   );
 };
 
-export default CustomDragLayer;
+export default React.memo(CustomDragLayer);

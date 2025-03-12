@@ -4,7 +4,7 @@
 The system is divided into four main components:
 1. **🖥️ Frontend**: React and Material-UI for responsive UI
 2. **🎮 Game Engine**: Core game mechanics and state management
-3. **📱 Mobile Layer**: Touch interactions and responsive design
+3. **📱 Mobile Layer**: Enhanced touch interactions and responsive design
 4. **🎯 Score System**: Chain reactions and combo tracking
 
 ---
@@ -15,7 +15,7 @@ The system is divided into four main components:
 3. **📦 State Management**: React Context for game and theme state
 4. **🎯 Match Detection**: Center-first approach for consecutive matches
 5. **✨ Animation System**: GSAP for smooth, performant animations
-6. **📱 Mobile Support**: Multi-backend drag-and-drop for touch/mouse
+6. **📱 Mobile Support**: Custom touch gesture system with multi-backend drag-and-drop
 7. **🚀 Deployment**: Automated GitHub Pages with relative paths
 8. **🏗️ Code Organization**: Modular architecture with clear separation of concerns
 
@@ -28,12 +28,13 @@ The system is divided into four main components:
    - `GameBoard`: Game state orchestrator
    - `BoardGrid`: Pure rendering component
    - `Jewel`: Touch and mouse interaction handling
-   - `CustomDragLayer`: Enhanced drag preview
+   - `CustomDragLayer`: Enhanced drag preview with animations
    - `ScoreDisplay`: Score and multiplier visualization
 
 2. **⚙️ Custom Hooks**:
    - `useGameLogic`: Core game mechanics
    - `useJewelSwap`: Jewel movement handling
+   - `useTouchGesture`: Touch interaction management
    - `useScore`: Scoring and multiplier system
    - `useTheme`: Theme management
    - `useViewportCalculator`: Responsive sizing
@@ -57,22 +58,36 @@ The system is divided into four main components:
    - Combo system integration
    - Visual feedback for chains
 
-3. **✨ Animation Patterns**:
-   - Sequential animation flow:
-     1. Swap/touch animation
-     2. Match highlight
-     3. Match disappear
-     4. Cascade effect
-   - Touch feedback animations
-   - Selected jewel highlighting
-   - Mobile-optimized transitions
+3. **📱 Touch Interaction Patterns**:
+   - Gesture-based movement:
+     1. Touch start with feedback
+     2. Swipe detection with thresholds
+     3. Direction calculation
+     4. Movement validation
+     5. Animation triggers
+   - Visual feedback system:
+     1. Touch ripple effects
+     2. Movement previews
+     3. Tilt and scale animations
+     4. Success/failure indicators
+   - Performance optimizations:
+     1. Touch event debouncing
+     2. Animation throttling
+     3. Hardware acceleration
+     4. Efficient rerendering
 
-4. **📱 Mobile Interaction Patterns**:
-   - Touch-to-select with feedback
-   - Drag-to-swap with preview
-   - Multi-backend support
-   - Responsive sizing
-   - Touch event optimization
+4. **✨ Animation Patterns**:
+   - Sequential animation flow:
+     1. Touch/swipe feedback
+     2. Movement preview
+     3. Match highlight
+     4. Match disappear
+     5. Cascade effect
+   - Mobile optimizations:
+     1. Hardware-accelerated transforms
+     2. Efficient animation triggers
+     3. Battery-conscious effects
+     4. Smooth state transitions
 
 ### 🚀 Deployment Patterns
 
@@ -100,11 +115,11 @@ The system is divided into four main components:
    - Coordinates with game logic
    - Handles window resizing
 
-2. **BoardGrid**:
-   - Pure rendering component
-   - Manages layout and styling
-   - Handles jewel positioning
-   - Provides touch interaction surface
+2. **Touch System**:
+   - Manages gesture detection
+   - Handles movement validation
+   - Coordinates animations
+   - Provides haptic feedback
 
 3. **Game Logic**:
    - Processes matches and cascades
@@ -123,3 +138,4 @@ The system is divided into four main components:
    - Size calculations
    - Match detection
    - Hint generation
+   - Touch gesture processing

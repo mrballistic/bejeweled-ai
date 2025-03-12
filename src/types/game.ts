@@ -7,6 +7,8 @@ export interface JewelType {
   id: string;
   type: string;
   position: Position;
+  isMoving?: boolean;
+  isNew?: boolean;
 }
 
 export type NullableJewelType = JewelType | null;

@@ -6,6 +6,7 @@ import { useGameLogic } from '../hooks/useGameLogic';
 import { useViewportCalculator } from '../utils/sizeCalculator';
 import useJewelSwap from '../hooks/useJewelSwap';
 import { useScore } from '../context/ScoreContext';
+import { findHint } from '../utils/hintFinder';
 import BoardGrid from './BoardGrid';
 
 interface GameBoardProps {

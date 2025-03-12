@@ -49,6 +49,8 @@ const BoardGrid: React.FC<BoardGridProps> = ({
             onDragSwap={onDragSwap}
             isHint={hint?.x === jewel.position.x && hint?.y === jewel.position.y}
             isSelected={selectedJewel?.x === jewel.position.x && selectedJewel?.y === jewel.position.y}
+            isMoving={jewel.isMoving}
+            isNew={jewel.isNew}
             size={jewelSize}
           />
         ) : (
