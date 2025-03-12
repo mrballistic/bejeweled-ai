@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { Position, NullableJewelType, JewelType } from '../types/game';
 import { findMatches } from '../utils/matchDetection';
 import { handleCascade } from '../utils/cascadeHandler';
@@ -117,7 +117,6 @@ export const useGameLogic = ({ board, setBoard }: UseGameLogicProps) => {
   }, [addPoints, incrementCombo, resetCombo, incrementChainLevel, setBoard, calculateMatchPoints]);
 
   const handleMatches = useCallback(async (
-    matches: { type: string; jewels: JewelType[] }[],
     newBoard: NullableJewelType[][]
   ) => {
     await processMatchesAndCascade(newBoard, 0, true);
@@ -154,7 +153,7 @@ export const useGameLogic = ({ board, setBoard }: UseGameLogicProps) => {
         console.log('Valid move. Updating board state.');
         setBoard(newBoard);
         resetChainLevel(); // Reset chain level for new move
-        handleMatches(matches, newBoard);
+        handleMatches(newBoard);
       } else {
         console.log('Invalid move. Reverting swap.');
         await animateSwap(fromElement, toElement);

@@ -66,7 +66,6 @@ export const useTouchGesture = ({
     const deltaTime = Date.now() - touchRef.current.startTime;
 
     // Reset touch state
-    const touchState = touchRef.current;
     touchRef.current = null;
 
     // If the touch duration is too long, treat as a tap
