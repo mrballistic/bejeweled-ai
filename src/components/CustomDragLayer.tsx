@@ -16,14 +16,14 @@ const CustomDragLayer: React.FC = () => {
     initialOffset,
     currentOffset,
   } = useDragLayer((monitor) => ({
-    item: monitor.getItem() as DraggedItem,
+    item: monitor.getItem() as DraggedItem | null,
     itemType: monitor.getItemType(),
     initialOffset: monitor.getInitialSourceClientOffset(),
     currentOffset: monitor.getSourceClientOffset(),
     isDragging: monitor.isDragging(),
   }));
 
-  if (!isDragging || !initialOffset || !currentOffset) {
+  if (!isDragging || !initialOffset || !currentOffset || !item) {
     return null;
   }
 

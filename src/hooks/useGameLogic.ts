@@ -140,7 +140,7 @@ export const useGameLogic = ({ board, setBoard }: UseGameLogicProps) => {
 
     const temp = newBoard[from.y][from.x];
     newBoard[from.y][from.x] = newBoard[to.y][to.x];
-    newBoard[to.y][from.x] = temp;
+    newBoard[to.y][to.x] = temp;
 
     console.log('Board after swap:', JSON.stringify(newBoard));
 
