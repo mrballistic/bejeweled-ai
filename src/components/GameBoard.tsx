@@ -6,16 +6,14 @@ import { useGameLogic } from '../hooks/useGameLogic';
 import { useViewportCalculator } from '../utils/sizeCalculator';
 import useJewelSwap from '../hooks/useJewelSwap';
 import { useScore } from '../context/ScoreContext';
-import { findHint } from '../utils/hintFinder';
 import BoardGrid from './BoardGrid';
 
 interface GameBoardProps {
   hint: Position | null;
-  setHint: (hint: Position | null) => void;
 }
 
 const GameBoard = forwardRef<NullableJewelType[][], GameBoardProps>((
-  { hint, setHint }: GameBoardProps,
+  { hint }: GameBoardProps,
   ref: ForwardedRef<NullableJewelType[][]>
 ) => {
   const [board, setBoard] = useState<NullableJewelType[][]>([]);
@@ -23,7 +21,7 @@ const GameBoard = forwardRef<NullableJewelType[][], GameBoardProps>((
   const isInitialized = useRef(false);
   const { resetCombo, resetChainLevel } = useScore();
   const { handleResize } = useViewportCalculator();
-  const { handleSwap, handleMatches } = useGameLogic({ board, setBoard });
+  const { handleSwap } = useGameLogic({ board, setBoard });
 
   useImperativeHandle(ref, () => board, [board]);
 

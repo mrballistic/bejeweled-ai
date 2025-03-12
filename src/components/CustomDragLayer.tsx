@@ -40,8 +40,7 @@ const CustomDragLayer: React.FC = () => {
   const speed = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
   const scale = Math.min(1.2, 1 + speed * 0.001); // Max scale of 1.2x
 
-  // Calculate rotation based on movement direction
-  const rotation = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+  // Calculate tilt based on movement direction
   const tilt = Math.min(15, speed * 0.1); // Max tilt of 15 degrees
 
   return (

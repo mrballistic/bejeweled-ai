@@ -126,7 +126,7 @@ const AppContent: React.FC = () => {
               maxWidth: '600px',  // Maximum width to maintain readability
             }}
           >
-            <GameBoard ref={boardRef} hint={hint} setHint={setHint} />
+            <GameBoard ref={boardRef} hint={hint} />
             <ScoreDisplay />
             <Button
               variant="contained"
