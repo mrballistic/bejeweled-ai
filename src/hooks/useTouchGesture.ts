@@ -25,7 +25,7 @@ export const useTouchGesture = ({
   const touchRef = useRef<TouchState | null>(null);
   const [isTouching, setIsTouching] = useState(false);
 
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+  const handleTouchStart = useCallback((e: React.TouchEvent<HTMLElement>) => {
     e.preventDefault(); // Prevent scrolling
     const touch = e.touches[0];
     touchRef.current = {
@@ -36,7 +36,7 @@ export const useTouchGesture = ({
     setIsTouching(true);
   }, []);
 
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+  const handleTouchMove = useCallback((e: React.TouchEvent<HTMLElement>) => {
     e.preventDefault(); // Prevent scrolling
     if (!touchRef.current) return;
 
@@ -45,17 +45,17 @@ export const useTouchGesture = ({
     const deltaY = touch.clientY - touchRef.current.startY;
 
     // Visual feedback during movement
-    const element = e.currentTarget as HTMLElement;
+    const element = e.currentTarget;
     const transform = `translate(${deltaX * 0.2}px, ${deltaY * 0.2}px)`;
     element.style.transform = transform;
   }, []);
 
-  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+  const handleTouchEnd = useCallback((e: React.TouchEvent<HTMLElement>) => {
     e.preventDefault();
     setIsTouching(false);
 
     // Reset transform
-    const element = e.currentTarget as HTMLElement;
+    const element = e.currentTarget;
     element.style.transform = '';
 
     if (!touchRef.current) return;
@@ -103,13 +103,13 @@ export const useTouchGesture = ({
     }
   }, [onSwipe, onTap, position, threshold, maxTime]);
 
-  const handleTouchCancel = useCallback((e: React.TouchEvent) => {
+  const handleTouchCancel = useCallback((e: React.TouchEvent<HTMLElement>) => {
     e.preventDefault();
     setIsTouching(false);
     touchRef.current = null;
 
     // Reset transform
-    const element = e.currentTarget as HTMLElement;
+    const element = e.currentTarget;
     element.style.transform = '';
   }, []);
 

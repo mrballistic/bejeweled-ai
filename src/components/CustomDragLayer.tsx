@@ -3,6 +3,10 @@ import { useDragLayer } from 'react-dnd';
 import { useTheme } from '../context/ThemeProvider';
 import { ItemTypes } from './Jewel';
 
+interface DraggedItem {
+  type: string;
+}
+
 const CustomDragLayer: React.FC = () => {
   const { theme } = useTheme();
   const {
@@ -12,7 +16,7 @@ const CustomDragLayer: React.FC = () => {
     initialOffset,
     currentOffset,
   } = useDragLayer((monitor) => ({
-    item: monitor.getItem(),
+    item: monitor.getItem() as DraggedItem,
     itemType: monitor.getItemType(),
     initialOffset: monitor.getInitialSourceClientOffset(),
     currentOffset: monitor.getSourceClientOffset(),

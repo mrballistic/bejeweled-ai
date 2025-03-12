@@ -15,7 +15,7 @@ interface GameBoardProps {
 }
 
 const GameBoard = forwardRef<NullableJewelType[][], GameBoardProps>((
-  { hint }: GameBoardProps,
+  { hint, setHint }: GameBoardProps,
   ref: ForwardedRef<NullableJewelType[][]>
 ) => {
   const [board, setBoard] = useState<NullableJewelType[][]>([]);
