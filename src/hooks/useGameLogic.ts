@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Position, NullableJewelType, JewelType } from '../types/game';
+import { Position, NullableJewelType } from '../types/game';
 import { findMatches } from '../utils/matchDetection';
 import { handleCascade } from '../utils/cascadeHandler';
 import { animateMatch, animateCascade, animateSwap } from '../utils/animations';
