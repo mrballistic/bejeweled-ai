@@ -2,22 +2,13 @@ import { describe, it, expect } from 'vitest';
 import { findMatches } from '../matchDetection';
 import { Board, JewelKind, BOARD_SIZE } from '../../types/game';
 
-function makeBoard(grid: (JewelKind | null)[][]): Board {
-  let id = 0;
-  return grid.map(row =>
-    row.map(type =>
-      type ? { id: `test-${id++}`, type } : null
-    )
-  );
-}
-
 function emptyBoard(): Board {
   return Array.from({ length: BOARD_SIZE }, () =>
     Array.from({ length: BOARD_SIZE }, () => null)
   );
 }
 
-function fillBoard(type: JewelKind = 'ruby'): Board {
+function fillBoard(): Board {
   // Fill with alternating types to avoid matches
   const types: JewelKind[] = ['ruby', 'emerald', 'diamond', 'sapphire', 'topaz', 'amethyst', 'citrine'];
   let id = 0;
