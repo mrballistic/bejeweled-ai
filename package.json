@@ -27,6 +27,7 @@
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^6.4.7",
     "gsap": "^3.12.7",
+    "rdndmb-html5-to-touch": "^9.0.0",
     "react": "^19.0.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",

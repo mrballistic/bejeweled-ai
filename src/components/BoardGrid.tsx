@@ -8,6 +8,8 @@ interface BoardGridProps {
   selectedPosition: Position | null;
   hintPositions: Position[];
   onJewelSelect: (pos: Position) => void;
+  onSwap?: (pos1: Position, pos2: Position) => void;
+  isProcessing?: React.MutableRefObject<boolean>;
 }
 
 const BoardGrid: React.FC<BoardGridProps> = ({
@@ -16,6 +18,8 @@ const BoardGrid: React.FC<BoardGridProps> = ({
   selectedPosition,
   hintPositions,
   onJewelSelect,
+  onSwap,
+  isProcessing,
 }) => {
   const isSelected = (row: number, col: number) =>
     selectedPosition?.row === row && selectedPosition?.col === col;
@@ -51,6 +55,8 @@ const BoardGrid: React.FC<BoardGridProps> = ({
               isSelected={isSelected(rowIdx, colIdx)}
               isHinted={isHinted(rowIdx, colIdx)}
               onSelect={onJewelSelect}
+              onSwap={onSwap}
+              isProcessing={isProcessing}
             />
           ) : (
             <Box

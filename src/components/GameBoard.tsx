@@ -1,13 +1,14 @@
 import { forwardRef, useImperativeHandle } from 'react';
+import { Board, Position } from '../types/game';
 import { useGameLogic } from '../hooks/useGameLogic';
 import { useJewelSwap } from '../hooks/useJewelSwap';
 import BoardGrid from './BoardGrid';
 import { Box } from '@mui/material';
 
 export interface GameBoardHandle {
-  boardRef: React.MutableRefObject<import('../types/game').Board>;
+  boardRef: React.MutableRefObject<Board>;
   isProcessing: React.MutableRefObject<boolean>;
-  handleSwap: (pos1: import('../types/game').Position, pos2: import('../types/game').Position) => void;
+  handleSwap: (pos1: Position, pos2: Position) => void;
   resetBoard: () => void;
 }
 
@@ -37,6 +38,8 @@ const GameBoard = forwardRef<GameBoardHandle, GameBoardProps>(({ jewelSize }, re
         selectedPosition={selectedPosition}
         hintPositions={[]}
         onJewelSelect={handleJewelSelect}
+        onSwap={handleSwap}
+        isProcessing={isProcessing}
       />
     </Box>
   );
