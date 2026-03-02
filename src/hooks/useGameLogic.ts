@@ -7,6 +7,12 @@ import { cloneBoard, removeMatches, handleCascade } from '../utils/cascadeHandle
 import { animateSwap, animateMatch, animateCascade, animateRevert } from '../utils/animations';
 import { useScore } from '../context/ScoreContext';
 
+function waitForLayout(): Promise<void> {
+  return new Promise(resolve => {
+    requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+  });
+}
+
 export function useGameLogic() {
   const [board, setBoard] = useState<Board>(() => createBoard());
   const boardRef = useRef<Board>(board);
@@ -36,6 +42,9 @@ export function useGameLogic() {
     // Gravity + new jewels
     const cascadeResult = handleCascade(boardAfterRemoval);
     updateBoard(cascadeResult.board);
+
+    // Wait for browser to lay out new jewels before animating drops
+    await waitForLayout();
 
     // Animate drops
     await animateCascade(cascadeResult.moves);
@@ -73,6 +82,9 @@ export function useGameLogic() {
       newBoard[pos1.row][pos1.col] = newBoard[pos2.row][pos2.col];
       newBoard[pos2.row][pos2.col] = swapTemp;
       updateBoard(newBoard);
+
+      // Wait for browser to lay out the new grid positions
+      await waitForLayout();
 
       // Process matches and cascades
       await processMatchesAndCascade(newBoard, 0);
