@@ -31,8 +31,8 @@ export function animateSwap(pos1: Position, pos2: Position): Promise<void> {
       },
     });
 
-    tl.to(el1, { x: dx, y: dy, duration: 0.2, ease: 'power2.inOut' }, 0);
-    tl.to(el2, { x: -dx, y: -dy, duration: 0.2, ease: 'power2.inOut' }, 0);
+    tl.to(el1, { x: dx, y: dy, duration: 0.3, ease: 'power2.inOut' }, 0);
+    tl.to(el2, { x: -dx, y: -dy, duration: 0.3, ease: 'power2.inOut' }, 0);
   });
 }
 
@@ -56,16 +56,30 @@ export function animateMatch(matches: Match[]): Promise<void> {
       return;
     }
 
-    gsap.to(elements, {
-      scale: 1.3,
-      opacity: 0,
-      duration: 0.15,
-      stagger: 0.02,
-      ease: 'power2.out',
+    const tl = gsap.timeline({
       onComplete: () => {
         gsap.set(elements, { clearProps: 'all' });
         resolve();
       },
+    });
+
+    // Phase 1: Grow — swell up with a bright flash
+    tl.to(elements, {
+      scale: 1.4,
+      filter: 'brightness(1.8) drop-shadow(0 0 12px rgba(255,255,255,0.8))',
+      duration: 0.25,
+      stagger: 0.03,
+      ease: 'back.out(2)',
+    });
+
+    // Phase 2: Pop — burst outward and vanish
+    tl.to(elements, {
+      scale: 1.8,
+      opacity: 0,
+      filter: 'brightness(2) drop-shadow(0 0 0px rgba(255,255,255,0))',
+      duration: 0.15,
+      stagger: 0.02,
+      ease: 'power2.in',
     });
   });
 }
@@ -94,8 +108,8 @@ export function animateCascade(moves: CascadeMove[]): Promise<void> {
 
       const cellHeight = parent.getBoundingClientRect().height;
       const startY = -(cellHeight * rowsToTravel);
-      const duration = Math.max(0.08 * rowsToTravel, 0.1);
-      const columnDelay = move.col * 0.03;
+      const duration = Math.max(0.15 * rowsToTravel, 0.25);
+      const columnDelay = move.col * 0.05;
 
       gsap.set(el, { y: startY });
       tl.to(el, {
