@@ -10,6 +10,15 @@ interface UseGameLogicProps {
   setBoard: (board: NullableJewelType[][]) => void;
 }
 
+const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+const waitForNextFrame = () => {
+  if (typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function') {
+    return new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
+  }
+  return new Promise<void>((resolve) => setTimeout(resolve, 16));
+};
+
 export const useGameLogic = ({ board, setBoard }: UseGameLogicProps) => {
   const { addPoints, incrementCombo, resetCombo, incrementChainLevel, resetChainLevel } = useScore();
 
@@ -45,6 +54,16 @@ export const useGameLogic = ({ board, setBoard }: UseGameLogicProps) => {
 
     console.log(`Found ${matches.length} matches:`, matches);
 
+    const previousPositions = new Map<string, Position>();
+    currentBoard.forEach((row: NullableJewelType[]) =>
+      row.forEach((jewel: NullableJewelType) => {
+        if (!jewel) {
+          return;
+        }
+        previousPositions.set(jewel.id, { ...jewel.position });
+      })
+    );
+
     matches.forEach(match => {
       const matchLength = match.jewels.length;
       const points = calculateMatchPoints(matchLength);
@@ -56,7 +75,9 @@ export const useGameLogic = ({ board, setBoard }: UseGameLogicProps) => {
     incrementCombo();
 
     const workingBoard = currentBoard.map((row: NullableJewelType[]) => 
-      row.map((jewel: NullableJewelType) => jewel ? { ...jewel } : null)
+      row.map((jewel: NullableJewelType) => 
+        jewel ? { ...jewel, position: { ...jewel.position } } : null
+      )
     );
     
     const matchElements: HTMLElement[] = [];
@@ -67,11 +88,11 @@ export const useGameLogic = ({ board, setBoard }: UseGameLogicProps) => {
         console.log(`Removing jewel at (${x}, ${y}):`, jewel);
         workingBoard[y][x] = null;
 
-        const element = document.querySelector(`[data-position="${x}-${y}"]`) as HTMLElement;
+        const element = document.querySelector(`[data-jewel-id="${jewel.id}"]`) as HTMLElement;
         if (element) {
           matchElements.push(element);
         } else {
-          console.warn(`Could not find element for jewel at (${x}, ${y})`);
+          console.warn(`Could not find element for jewel id ${jewel.id} at (${x}, ${y})`);
         }
       });
     });
@@ -80,6 +101,11 @@ export const useGameLogic = ({ board, setBoard }: UseGameLogicProps) => {
       console.log('Starting match animation');
       await animateMatch(matchElements);
       console.log('Match animation completed');
+
+      console.log('Removing matched jewels from board');
+      setBoard(workingBoard);
+      await waitForNextFrame();
+      await wait(200);
 
       console.log('Applying cascade...');
       const cascadeResult = handleCascade(workingBoard, currentChainLevel);
@@ -91,20 +117,10 @@ export const useGameLogic = ({ board, setBoard }: UseGameLogicProps) => {
       }
       
       setBoard(cascadedBoard);
-
-      const cascadeElements: HTMLElement[] = [];
-      cascadedBoard.flat().forEach(jewel => {
-        if (jewel) {
-          const { x, y } = jewel.position;
-          const element = document.querySelector(`[data-position="${x}-${y}"]`) as HTMLElement;
-          if (element) {
-            cascadeElements.push(element);
-          }
-        }
-      });
+      await waitForNextFrame();
 
       console.log('Starting cascade animation');
-      await animateCascade(cascadeElements);
+      await animateCascade(cascadedBoard, previousPositions);
       console.log('Cascade animation completed');
 
       await processMatchesAndCascade(cascadedBoard, newChainLevel, false);
@@ -134,12 +150,25 @@ export const useGameLogic = ({ board, setBoard }: UseGameLogicProps) => {
     }
 
     const newBoard = board.map((row: NullableJewelType[]) => 
-      row.map((jewel: NullableJewelType) => (jewel ? { ...jewel } : null))
+      row.map((jewel: NullableJewelType) => 
+        jewel ? { ...jewel, position: { ...jewel.position } } : null
+      )
     );
 
     const temp = newBoard[from.y][from.x];
     newBoard[from.y][from.x] = newBoard[to.y][to.x];
     newBoard[to.y][to.x] = temp;
+
+    const updatedSource = newBoard[from.y][from.x];
+    const updatedTarget = newBoard[to.y][to.x];
+
+    if (updatedSource) {
+      updatedSource.position = { x: from.x, y: from.y };
+    }
+
+    if (updatedTarget) {
+      updatedTarget.position = { x: to.x, y: to.y };
+    }
 
     console.log('Board after swap:', JSON.stringify(newBoard));
 
@@ -160,6 +189,18 @@ export const useGameLogic = ({ board, setBoard }: UseGameLogicProps) => {
         const temp = newBoard[from.y][from.x];
         newBoard[from.y][from.x] = newBoard[to.y][to.x];
         newBoard[to.y][to.x] = temp;
+
+        const revertedSource = newBoard[from.y][from.x];
+        const revertedTarget = newBoard[to.y][to.x];
+
+        if (revertedSource) {
+          revertedSource.position = { x: from.x, y: from.y };
+        }
+
+        if (revertedTarget) {
+          revertedTarget.position = { x: to.x, y: to.y };
+        }
+
         setBoard(newBoard);
       }
     } catch (error) {

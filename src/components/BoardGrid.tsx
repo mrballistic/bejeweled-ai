@@ -43,6 +43,7 @@ const BoardGrid: React.FC<BoardGridProps> = ({
         jewel ? (
           <Jewel
             key={jewel.id}
+            id={jewel.id}
             type={jewel.type}
             position={jewel.position}
             onSelect={onJewelSelect}

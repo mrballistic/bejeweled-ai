@@ -10,6 +10,7 @@ export const ItemTypes = {
 };
 
 interface JewelProps {
+  id: string;
   type: string;
   position: Position;
   onSelect: (position: Position) => void;
@@ -22,6 +23,7 @@ interface JewelProps {
 }
 
 const Jewel: React.FC<JewelProps> = ({ 
+  id,
   type, 
   position, 
   onSelect, 
@@ -99,6 +101,7 @@ const Jewel: React.FC<JewelProps> = ({
         drag(drop(node));
       }}
       data-position={`${position.x}-${position.y}`}
+      data-jewel-id={id}
       data-moving={isMoving ? 'true' : 'false'}
       data-new={isNew ? 'true' : undefined}
       {...touchHandlers}

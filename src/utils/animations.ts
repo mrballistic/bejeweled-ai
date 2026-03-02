@@ -1,4 +1,5 @@
 import gsap from 'gsap';
+import { NullableJewelType, Position } from '../types/game';
 
 export const animateSwap = (from: HTMLElement, to: HTMLElement): Promise<void> => {
   return new Promise((resolve) => {
@@ -31,97 +32,142 @@ export const animateSwap = (from: HTMLElement, to: HTMLElement): Promise<void> =
 export const animateMatch = (elements: HTMLElement[]): Promise<void> => {
   return new Promise((resolve) => {
     gsap.to(elements, {
-      scale: 1.2,
+      scale: 1.25,
       opacity: 0,
-      duration: 0.3,
-      ease: 'power2.in',
-      stagger: {
-        amount: 0.2,
-        from: 'center',
-      },
+      duration: 0.18,
+      ease: 'back.in(1.4)',
       onComplete: () => {
         gsap.set(elements, { clearProps: 'scale,opacity' });
-        // Add delay before resolving
-        gsap.delayedCall(0.5, resolve);
+        resolve();
       },
     });
   });
 };
 
-export const animateCascade = (elements: HTMLElement[]): Promise<void> => {
+export const animateCascade = (
+  board: NullableJewelType[][],
+  previousPositions: Map<string, Position>
+): Promise<void> => {
   return new Promise((resolve) => {
-    // Group elements by column
-    const columns = new Map<number, HTMLElement[]>();
-    elements.forEach(element => {
-      const position = element.getAttribute('data-position');
-      if (position) {
-        const [x] = position.split('-').map(Number);
-        if (!columns.has(x)) {
-          columns.set(x, []);
-        }
-        columns.get(x)?.push(element);
-      }
-    });
-
-    // Create timeline for coordinated animation
-    const timeline = gsap.timeline({
-      onComplete: () => {
-        gsap.set(elements, { clearProps: 'y' });
-        resolve();
-      }
-    });
-
-    // First phase: Move all existing jewels down together
-    const existingJewels = elements.filter(el => 
-      el.getAttribute('data-moving') === 'true' && 
-      !el.hasAttribute('data-new')
-    );
-
-    if (existingJewels.length > 0) {
-      timeline.to(existingJewels, {
-        y: 0,
-        duration: 0.4,
-        ease: 'power1.in',
-      });
+    if (typeof document === 'undefined') {
+      resolve();
+      return;
     }
 
-    // Second phase: Fill empty spaces from bottom up
-    timeline.addLabel('newJewels', '>');
+    const elementsToReset: HTMLElement[] = [];
+    const columnAnimations = new Map<
+      number,
+      Array<{
+        element: HTMLElement;
+        fromY: number;
+        fromX: number;
+        isNew: boolean;
+        yOrder: number;
+      }>
+    >();
 
-    columns.forEach((columnElements) => {
-      // Sort new jewels by final y position (bottom to top)
-      const newJewels = columnElements
-        .filter(el => el.hasAttribute('data-new'))
-        .sort((a, b) => {
-          const [, aY] = a.getAttribute('data-position')?.split('-').map(Number) || [0, 0];
-          const [, bY] = b.getAttribute('data-position')?.split('-').map(Number) || [0, 0];
-          return bY - aY; // Sort bottom to top
+    board.forEach((row) => {
+      row.forEach((jewel) => {
+        if (!jewel) {
+          return;
+        }
+
+        const element = document.querySelector(`[data-jewel-id="${jewel.id}"]`) as HTMLElement | null;
+        if (!element) {
+          return;
+        }
+
+        const currentRect = element.getBoundingClientRect();
+        const parent = element.parentElement as HTMLElement | null;
+        const parentStyles = parent ? window.getComputedStyle(parent) : null;
+        const gapValue = parentStyles?.rowGap || parentStyles?.gap || '0';
+        const gap = parseFloat(gapValue) || 0;
+        const cellHeight = currentRect.height + gap;
+
+        const previousPosition = previousPositions.get(jewel.id);
+        let fromY: number;
+        let isNew = false;
+
+        let fromX = 0;
+
+        if (previousPosition) {
+          const deltaRows = previousPosition.y - jewel.position.y;
+          fromY = deltaRows * cellHeight;
+          const deltaCols = previousPosition.x - jewel.position.x;
+          if (deltaCols !== 0) {
+            const cellWidth = currentRect.width + gap;
+            fromX = deltaCols * cellWidth;
+          }
+        } else {
+          fromY = -(cellHeight * (jewel.position.y + 1));
+          isNew = true;
+        }
+
+        // Ignore negligible movement
+        if (Math.abs(fromY) < 1) {
+          fromY = 0;
+        }
+
+        if (fromY === 0 && !isNew) {
+          return;
+        }
+
+        if (!columnAnimations.has(jewel.position.x)) {
+          columnAnimations.set(jewel.position.x, []);
+        }
+
+        columnAnimations.get(jewel.position.x)?.push({
+          element,
+          fromY,
+          fromX,
+          isNew,
+          yOrder: jewel.position.y,
         });
 
-      // Get the jewel size from the first element
-      const jewelRect = columnElements[0]?.getBoundingClientRect();
-      const jewelSize = jewelRect ? jewelRect.height : 50;
+        elementsToReset.push(element);
+      });
+    });
 
-      // Set initial positions for new jewels
-      newJewels.forEach(jewel => {
-        gsap.set(jewel, {
-          y: -jewelSize,
-          opacity: 0,
+    if (columnAnimations.size === 0) {
+      resolve();
+      return;
+    }
+
+    const timeline = gsap.timeline({
+      defaults: {
+        duration: 0.28,
+        ease: 'power2.in',
+      },
+      onComplete: () => {
+        elementsToReset.forEach((el) => {
+          gsap.set(el, { clearProps: 'transform,opacity' });
         });
-      });
+        resolve();
+      },
+    });
 
-      // Animate new jewels one at a time, bottom to top
-      newJewels.forEach((jewel, i) => {
-        timeline.to(jewel,
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.3,
-            ease: 'power1.in',
-          },
-          `newJewels+=${i * 0.15}` // Stagger new jewels with a delay
-        );
-      });
+    const sortedColumns = Array.from(columnAnimations.entries()).sort(([a], [b]) => a - b);
+
+    sortedColumns.forEach(([_columnIndex, animations], columnOffset) => {
+      animations
+        .sort((a, b) => a.yOrder - b.yOrder)
+        .forEach((item, rowOffset) => {
+          const startAt = columnOffset * 0.05 + rowOffset * 0.04;
+          timeline.fromTo(
+            item.element,
+            {
+              x: item.fromX,
+              y: item.fromY,
+              opacity: item.isNew ? 0 : 1,
+            },
+            {
+              x: 0,
+              y: 0,
+              opacity: 1,
+            },
+            startAt
+          );
+        });
     });
   });
 };
