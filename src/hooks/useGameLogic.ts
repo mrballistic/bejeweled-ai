@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { Board, Position, Match } from '../types/game';
 import { createBoard } from '../utils/boardInitializer';
 import { findMatches } from '../utils/matchDetection';
@@ -14,7 +15,7 @@ export function useGameLogic() {
 
   const updateBoard = useCallback((newBoard: Board) => {
     boardRef.current = newBoard;
-    setBoard(newBoard);
+    flushSync(() => setBoard(newBoard));
   }, []);
 
   const processMatchesAndCascade = useCallback(async (currentBoard: Board, chainLevel: number): Promise<Board> => {
