@@ -3,6 +3,7 @@ import { flushSync } from 'react-dom';
 import { Board, Position, Match } from '../types/game';
 import { createBoard } from '../utils/boardInitializer';
 import { findMatches } from '../utils/matchDetection';
+import { findHint } from '../utils/hintFinder';
 import { cloneBoard, removeMatches, handleCascade } from '../utils/cascadeHandler';
 import { animateSwap, animateMatch, animateCascade, animateRevert } from '../utils/animations';
 import { useScore } from '../context/ScoreContext';
@@ -15,6 +16,7 @@ function waitForLayout(): Promise<void> {
 
 export function useGameLogic() {
   const [board, setBoard] = useState<Board>(() => createBoard());
+  const [isGameOver, setIsGameOver] = useState(false);
   const boardRef = useRef<Board>(board);
   const isProcessing = useRef(false);
   const { addPoints } = useScore();
@@ -87,7 +89,12 @@ export function useGameLogic() {
       await waitForLayout();
 
       // Process matches and cascades
-      await processMatchesAndCascade(newBoard, 0);
+      const finalBoard = await processMatchesAndCascade(newBoard, 0);
+
+      // Check for deadlock after all cascades resolve
+      if (!findHint(finalBoard)) {
+        setIsGameOver(true);
+      }
     } finally {
       isProcessing.current = false;
     }
@@ -96,12 +103,14 @@ export function useGameLogic() {
   const resetBoard = useCallback(() => {
     const newBoard = createBoard();
     updateBoard(newBoard);
+    setIsGameOver(false);
   }, [updateBoard]);
 
   return {
     board,
     boardRef,
     isProcessing,
+    isGameOver,
     handleSwap,
     resetBoard,
   };

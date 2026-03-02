@@ -9,6 +9,7 @@ import { Box } from '@mui/material';
 export interface GameBoardHandle {
   boardRef: React.MutableRefObject<Board>;
   isProcessing: React.MutableRefObject<boolean>;
+  isGameOver: boolean;
   handleSwap: (pos1: Position, pos2: Position) => void;
   resetBoard: () => void;
   showHint: () => void;
@@ -19,7 +20,7 @@ interface GameBoardProps {
 }
 
 const GameBoard = forwardRef<GameBoardHandle, GameBoardProps>(({ jewelSize }, ref) => {
-  const { board, boardRef, isProcessing, handleSwap, resetBoard } = useGameLogic();
+  const { board, boardRef, isProcessing, isGameOver, handleSwap, resetBoard } = useGameLogic();
   const { selectedPosition, handleJewelSelect, clearSelection } = useJewelSwap({
     onSwap: handleSwap,
     isProcessing,
@@ -43,11 +44,9 @@ const GameBoard = forwardRef<GameBoardHandle, GameBoardProps>(({ jewelSize }, re
         setHintPositions([]);
         hintTimeoutRef.current = null;
       }, 3000);
-    } else {
-      // Deadlocked — reshuffle
-      resetBoard();
     }
-  }, [boardRef, isProcessing, clearSelection, resetBoard]);
+    // If no hint, board is deadlocked — game over state is handled by useGameLogic
+  }, [boardRef, isProcessing, clearSelection]);
 
   const handleReset = useCallback(() => {
     if (hintTimeoutRef.current) {
@@ -61,10 +60,11 @@ const GameBoard = forwardRef<GameBoardHandle, GameBoardProps>(({ jewelSize }, re
   useImperativeHandle(ref, () => ({
     boardRef,
     isProcessing,
+    isGameOver,
     handleSwap,
     resetBoard: handleReset,
     showHint,
-  }));
+  }), [isGameOver, handleSwap, handleReset, showHint]);
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center' }}>

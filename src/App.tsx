@@ -8,6 +8,7 @@ import GameBoard, { GameBoardHandle } from './components/GameBoard';
 import Header from './components/Header';
 import GameControls from './components/GameControls';
 import AIControls from './components/AIControls';
+import GameOverOverlay from './components/GameOverOverlay';
 import CustomDragLayer from './components/CustomDragLayer';
 import { useAIPlayer } from './hooks/useAIPlayer';
 import { Board } from './types/game';
@@ -19,18 +20,20 @@ const EMPTY_BOARD: Board = [];
 const GameContent: React.FC = () => {
   const gameBoardRef = useRef<GameBoardHandle>(null);
   const [isAIMode, setIsAIMode] = useState(false);
-  const { resetScore } = useScore();
+  const [isGameOver, setIsGameOver] = useState(false);
+  const { score, resetScore } = useScore();
 
   // Stable refs that delegate to the GameBoard handle
   const boardProxy = useRef<Board>(EMPTY_BOARD);
   const processingProxy = useRef(false);
 
-  // Keep proxies in sync
+  // Keep proxies in sync + poll game over state
   useEffect(() => {
     const id = setInterval(() => {
       if (gameBoardRef.current) {
         boardProxy.current = gameBoardRef.current.boardRef.current;
         processingProxy.current = gameBoardRef.current.isProcessing.current;
+        setIsGameOver(gameBoardRef.current.isGameOver);
       }
     }, 50);
     return () => clearInterval(id);
@@ -64,7 +67,15 @@ const GameContent: React.FC = () => {
     gameBoardRef.current?.resetBoard();
     resetScore();
     ai.resetMoveCount();
+    setIsGameOver(false);
   }, [resetScore, ai]);
+
+  // Pause AI when game is over
+  useEffect(() => {
+    if (isGameOver && ai.isActive) {
+      ai.toggleActive();
+    }
+  }, [isGameOver, ai]);
 
   return (
     <DndProvider backend={MultiBackend} options={HTML5toTouch}>
@@ -96,6 +107,9 @@ const GameContent: React.FC = () => {
         {!isAIMode && <Box />}
         <CustomDragLayer />
       </Box>
+      {isGameOver && (
+        <GameOverOverlay score={score} onNewGame={handleNewGame} />
+      )}
     </DndProvider>
   );
 };
