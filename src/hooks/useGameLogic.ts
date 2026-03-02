@@ -3,6 +3,7 @@ import { Board, Position, Match } from '../types/game';
 import { createBoard } from '../utils/boardInitializer';
 import { findMatches } from '../utils/matchDetection';
 import { cloneBoard, removeMatches, handleCascade } from '../utils/cascadeHandler';
+import { animateSwap, animateMatch, animateCascade, animateRevert } from '../utils/animations';
 import { useScore } from '../context/ScoreContext';
 
 export function useGameLogic() {
@@ -16,51 +17,67 @@ export function useGameLogic() {
     setBoard(newBoard);
   }, []);
 
-  const processMatchesAndCascade = useCallback((currentBoard: Board, chainLevel: number): Board => {
+  const processMatchesAndCascade = useCallback(async (currentBoard: Board, chainLevel: number): Promise<Board> => {
     const matches: Match[] = findMatches(currentBoard);
     if (matches.length === 0) return currentBoard;
 
+    // Score this round
     addPoints(matches, chainLevel);
+
+    // Animate removal
+    await animateMatch(matches);
 
     // Remove matched cells
     const allPositions = matches.flatMap(m => m.positions);
-    let newBoard = removeMatches(currentBoard, allPositions);
+    const boardAfterRemoval = removeMatches(currentBoard, allPositions);
+    updateBoard(boardAfterRemoval);
 
-    // Cascade: gravity + new jewels
-    const cascadeResult = handleCascade(newBoard);
-    newBoard = cascadeResult.board;
+    // Gravity + new jewels
+    const cascadeResult = handleCascade(boardAfterRemoval);
+    updateBoard(cascadeResult.board);
 
-    updateBoard(newBoard);
+    // Animate drops
+    await animateCascade(cascadeResult.moves);
 
     // Recurse for chain reactions
-    return processMatchesAndCascade(newBoard, chainLevel + 1);
+    return processMatchesAndCascade(cascadeResult.board, chainLevel + 1);
   }, [addPoints, updateBoard]);
 
-  const handleSwap = useCallback((pos1: Position, pos2: Position) => {
+  const handleSwap = useCallback(async (pos1: Position, pos2: Position) => {
     if (isProcessing.current) return;
     isProcessing.current = true;
 
-    // Clone and swap
-    const newBoard = cloneBoard(boardRef.current);
-    const temp = newBoard[pos1.row][pos1.col];
-    newBoard[pos1.row][pos1.col] = newBoard[pos2.row][pos2.col];
-    newBoard[pos2.row][pos2.col] = temp;
+    try {
+      // Clone and swap to test
+      const testBoard = cloneBoard(boardRef.current);
+      const temp = testBoard[pos1.row][pos1.col];
+      testBoard[pos1.row][pos1.col] = testBoard[pos2.row][pos2.col];
+      testBoard[pos2.row][pos2.col] = temp;
 
-    // Check for matches
-    const matches = findMatches(newBoard);
-    if (matches.length === 0) {
-      // Invalid swap — no match created
+      const matches = findMatches(testBoard);
+
+      if (matches.length === 0) {
+        // Invalid swap — animate forward then back
+        await animateSwap(pos1, pos2);
+        await animateRevert(pos1, pos2);
+        return;
+      }
+
+      // Valid swap — animate the swap
+      await animateSwap(pos1, pos2);
+
+      // Commit the swap to state
+      const newBoard = cloneBoard(boardRef.current);
+      const swapTemp = newBoard[pos1.row][pos1.col];
+      newBoard[pos1.row][pos1.col] = newBoard[pos2.row][pos2.col];
+      newBoard[pos2.row][pos2.col] = swapTemp;
+      updateBoard(newBoard);
+
+      // Process matches and cascades
+      await processMatchesAndCascade(newBoard, 0);
+    } finally {
       isProcessing.current = false;
-      return;
     }
-
-    // Commit the swap
-    updateBoard(newBoard);
-
-    // Process matches and cascades
-    processMatchesAndCascade(newBoard, 0);
-
-    isProcessing.current = false;
   }, [processMatchesAndCascade, updateBoard]);
 
   const resetBoard = useCallback(() => {
