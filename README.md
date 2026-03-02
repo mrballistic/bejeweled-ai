@@ -1,149 +1,121 @@
-# ✨ Bejeweled.ai ✨
+# Bejeweled.ai
 
-## 🌟 Overview
-Bejeweled.ai is a web-based match-three puzzle game inspired by Bejeweled 2. It offers:
-- 🎮 **Player Mode**: Classic match-three gameplay with drag-and-drop mechanics, score tracking, and level progression.
-- 🤖 **AI Mode**: Watch the AI play the game with visualized strategies and performance metrics.
+A polished dark-arcade match-three puzzle game built with React 19, featuring SVG jewels, GSAP animations, and an LLM-powered AI mode (coming soon).
 
-Built with **React** and **Material-UI (MUI)**, the game uses emoji-based game pieces for simplicity and universal compatibility.
-
-https://mrballistic.github.io/bejeweled-ai/
+**Live:** [mrballistic.github.io/bejeweled-ai/](https://mrballistic.github.io/bejeweled-ai/)
 
 ---
 
-## 🕹️ Features
+## Features
 
-### 🎮 Player Mode
-- Drag-and-drop or click-to-swap mechanics with visual feedback
-- Touch support for mobile devices
-- Score tracking with combo and chain reaction multipliers
-- Animated match and cascade effects
-- Hint system for finding possible moves
-- Special gems and power-ups
-- Level progression with increasing difficulty
+### Player Mode
+- **7 distinct SVG jewel shapes** — diamond, ruby, emerald, sapphire, topaz, amethyst, citrine — each with radial gradients and drop shadows
+- **Click, drag, or swipe** to swap adjacent jewels (react-dnd multi-backend for mouse + touch)
+- **Animated game loop** — GSAP-powered swap slides, match flash/fade, and cascade drops with bounce easing
+- **Chain reaction scoring** — cascades multiply points exponentially (2x, 4x, 8x... up to 32x)
+- **Combo multipliers** — simultaneous matches in a cascade step boost score (1.5x–2.5x)
+- **Hint system** — brute-force solver highlights a valid move for 3 seconds
+- **Deadlock detection** — auto-reshuffles when no moves remain
 
-### 🤖 AI Mode
-- Automated gameplay with visual representation of AI decisions
+### AI Mode (Phase 6 — not yet implemented)
+- Anthropic API integration for autonomous play
 - Adjustable speed controls
-- Strategy display and performance metrics
+- Fallback to deterministic hint solver on invalid AI moves
 
 ---
 
-## ✨ Recent Updates
+## Tech Stack
 
-### 🔄 Chain Reaction System
-- **Score Multipliers**: 
-  - Chain reactions double points with each cascade level
-  - Combo system for consecutive matches
-  - Visual feedback for both multipliers
-- **Enhanced Scoring**:
-  - Base points: Match-3 (50), Match-4 (100), Match-5 (200)
-  - Combo multiplier: 1.5x per consecutive match
-  - Chain multiplier: 2x per cascade level (up to 32x)
-
-### 🏗️ Code Refactoring
-- **Modular Architecture**:
-  - Separated game types and constants
-  - Extracted core game logic into hooks
-  - Split UI components for better maintainability
-- **New Components**:
-  - BoardGrid for pure rendering
-  - Utility functions for board management
-  - Size calculator for responsive design
-- **Enhanced Testing**: More modular code enables better unit testing
-
-### 📱 Mobile Support & Touch Interactions
-- **Multi-Backend Support**: 
-  - Seamless switching between mouse and touch interactions
-  - Responsive design for all screen sizes
-  - Touch-specific visual feedback and animations
-- **Mobile Optimizations**:
-  - Dynamic sizing based on viewport
-  - Touch-friendly UI elements
-  - Improved spacing and layout for mobile devices
-
-### 🎯 Match Detection & Visual Improvements
-- **Enhanced Match Detection**: Improved system that properly handles consecutive matches
-- **Visual Feedback**:
-  - Added blue glow effect for selected jewels
-  - Smooth animations for both valid and invalid moves
-  - Clear visual indication of match cascades
-  - Touch ripple effects for mobile interactions
-
-### 🚀 Deployment Improvements
-- **Streamlined Process**: Updated deploy script with:
-  - Automatic dependency installation
-  - GitHub Pages optimization
-  - Main branch synchronization
-  - Asset path handling for reliable deployment
+| Layer | Choice |
+|-------|--------|
+| Framework | React 19 (functional components + hooks) |
+| Language | TypeScript (strict mode) |
+| Build | Vite (`base: './'` for GitHub Pages) |
+| UI | MUI 6 — dark theme, `sx` prop styling |
+| Animation | GSAP 3 — promise-wrapped tweens, timeline cascades |
+| Drag & Drop | react-dnd + react-dnd-multi-backend |
+| Testing | Vitest + React Testing Library |
+| Fonts | Orbitron (display) + Rajdhani (body) via Google Fonts |
 
 ---
 
-## 🛠️ Development Setup
+## Architecture
 
-### 📋 Prerequisites
-- Node.js (v16 or higher)
-- npm (v7 or higher)
+```
+App
+├── ThemeProvider (MUI dark theme — #1A1A2E background)
+│   └── ScoreProvider (score, chain, combo via React Context)
+│       └── DndProvider (MultiBackend — mouse + touch)
+│           ├── Header (title, score display, mode toggle)
+│           ├── GameBoard (owns board state via useState + useRef)
+│           │   └── BoardGrid (CSS Grid → 64 Jewel components)
+│           │       └── Jewel (SVG shape + click/drag/touch handlers)
+│           ├── GameControls (hint + new game)
+│           └── CustomDragLayer
+```
 
-### 🚀 Steps
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-repo/bejeweled-ai.git
-   cd bejeweled-ai
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
-4. Open the game in your browser at `http://localhost:3000`
+**Game loop:** `handleSwap → findMatches → animateMatch → removeMatches → handleCascade → animateCascade → recurse`
+
+All async — each step awaits animation completion. `isProcessing` ref lock prevents race conditions.
 
 ---
 
-## 🚀 Deployment
+## Development
 
-### 📦 GitHub Pages
-To deploy the latest version to GitHub Pages:
+```bash
+npm install          # install dependencies
+npm run dev          # vite dev server (port 5173)
+npm run build        # typecheck + production build
+npm test             # vitest in watch mode
+npm run test:run     # vitest single run
+npm run preview      # serve dist/ locally
+```
 
-1. Ensure all changes are committed
-2. Run the deployment script:
-   ```bash
-   ./deploy.sh
-   ```
+### Environment
 
-The script will automatically:
-- Install all dependencies
-- Create a fresh gh-pages branch
-- Build with relative asset paths
-- Deploy to GitHub Pages
-- Push changes to main branch
-- Handle all necessary cleanup
+Copy `.env.example` to `.env` and add your Anthropic API key (needed for AI mode only):
 
-The deployed site will be available at your GitHub Pages URL.
+```bash
+cp .env.example .env
+```
 
 ---
 
-## 🌟 Future Plans
-- **Gemini Integration**: Advanced match detection and AI enhancements
-- **New Features**:
-  - 🌈 Special jewels for matching 4 or 5 in a row
-  - 📱 Mobile-specific features:
-    - Haptic feedback for matches
-    - Gesture controls for hints
-    - Portrait/landscape optimization
-  - 🎮 Multiple AI difficulty levels
-  - 🌐 Online multiplayer functionality
-  - 🥇 Leaderboard and achievement systems
+## Scoring
+
+| Match | Base Points |
+|-------|------------|
+| 3-in-a-row | 100 |
+| 4-in-a-row | 200 |
+| 5-in-a-row | 500 |
+
+**Chain multiplier:** 1x → 2x → 4x → 8x → 16x → 32x (cap) per cascade depth
+
+**Combo multiplier:** 1.5x (2 simultaneous), 2x (3), 2.5x (4+)
 
 ---
 
-## 🤝 Contributing
-Contributions are welcome! Please fork the repository and submit a pull request with your changes.
+## Tests
+
+39 tests across 7 test files covering:
+- Game types and constants
+- Board initializer (no pre-existing matches)
+- Match detection (3/4/5-in-a-row, T-shapes, L-shapes, deduplication)
+- Cascade handler (gravity, new jewel spawning)
+- Hint finder (valid move detection, deadlock detection)
+- Scoring math (base points, chain/combo multipliers)
+- Adjacency checks
 
 ---
 
-## 📜 License
-This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
+## Deployment
+
+```bash
+./deploy.sh    # builds and force-pushes to gh-pages branch
+```
+
+---
+
+## License
+
+MIT — see [LICENSE](./LICENSE) for details.
