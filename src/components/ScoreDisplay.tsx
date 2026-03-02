@@ -56,31 +56,29 @@ const ScoreDisplay: React.FC = () => {
       >
         {score.toLocaleString()}
       </Typography>
-      {chainLevel > 0 && (
-        <Typography
-          sx={{
-            fontFamily: "'Orbitron', sans-serif",
-            fontSize: '0.9rem',
-            fontWeight: 700,
-            color: '#FFD040',
-            mt: 0.5,
-          }}
-        >
-          CHAIN x{Math.pow(2, Math.min(chainLevel, 5))}
-        </Typography>
-      )}
-      {lastPointsAdded > 0 && (
-        <Typography
-          sx={{
-            fontFamily: "'Rajdhani', sans-serif",
-            fontSize: '0.85rem',
-            color: '#40E880',
-            mt: 0.25,
-          }}
-        >
-          +{lastPointsAdded.toLocaleString()}
-        </Typography>
-      )}
+      <Typography
+        sx={{
+          fontFamily: "'Orbitron', sans-serif",
+          fontSize: '0.9rem',
+          fontWeight: 700,
+          color: '#FFD040',
+          mt: 0.5,
+          visibility: chainLevel > 0 ? 'visible' : 'hidden',
+        }}
+      >
+        {chainLevel > 0 ? `CHAIN x${Math.pow(2, Math.min(chainLevel, 5))}` : '\u00A0'}
+      </Typography>
+      <Typography
+        sx={{
+          fontFamily: "'Rajdhani', sans-serif",
+          fontSize: '0.85rem',
+          color: '#40E880',
+          mt: 0.25,
+          visibility: lastPointsAdded > 0 ? 'visible' : 'hidden',
+        }}
+      >
+        {lastPointsAdded > 0 ? `+${lastPointsAdded.toLocaleString()}` : '\u00A0'}
+      </Typography>
     </Box>
   );
 };
