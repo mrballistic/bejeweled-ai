@@ -1,6 +1,6 @@
 # Bejeweled.ai
 
-A polished dark-arcade match-three puzzle game built with React 19, featuring SVG jewels, GSAP animations, and an LLM-powered AI mode (coming soon).
+A polished dark-arcade match-three puzzle game built with React 19, featuring SVG jewels, GSAP animations, and an LLM-powered AI mode.
 
 **Live:** [mrballistic.github.io/bejeweled-ai/](https://mrballistic.github.io/bejeweled-ai/)
 
@@ -17,10 +17,12 @@ A polished dark-arcade match-three puzzle game built with React 19, featuring SV
 - **Hint system** — brute-force solver highlights a valid move for 3 seconds
 - **Deadlock detection** — auto-reshuffles when no moves remain
 
-### AI Mode (Phase 6 — not yet implemented)
-- Anthropic API integration for autonomous play
-- Adjustable speed controls
-- Fallback to deterministic hint solver on invalid AI moves
+### AI Mode
+- **Gemini-powered** — Google Gemini 2.0 Flash analyzes the board and picks moves autonomously
+- **Play/Pause** with adjustable speed (slow / medium / fast)
+- **Move counter** and thinking indicator show AI activity
+- **Fallback** — invalid AI moves automatically fall back to the deterministic hint solver
+- **Rate-limited** — minimum 800ms between API calls, AbortController cleanup on mode switch
 
 ---
 
@@ -35,6 +37,7 @@ A polished dark-arcade match-three puzzle game built with React 19, featuring SV
 | Animation | GSAP 3 — promise-wrapped tweens, timeline cascades |
 | Drag & Drop | react-dnd + react-dnd-multi-backend |
 | Testing | Vitest + React Testing Library |
+| AI Backend | Google Gemini 2.0 Flash — client-side API calls |
 | Fonts | Orbitron (display) + Rajdhani (body) via Google Fonts |
 
 ---
@@ -73,7 +76,7 @@ npm run preview      # serve dist/ locally
 
 ### Environment
 
-Copy `.env.example` to `.env` and add your Anthropic API key (needed for AI mode only):
+Copy `.env.example` to `.env` and add your Gemini API key (needed for AI mode only):
 
 ```bash
 cp .env.example .env
